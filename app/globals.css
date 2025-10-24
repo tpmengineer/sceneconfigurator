@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground: #FF0000;
+  --background-start: #FF0000;
+  --background-end: #FFF9E3;
+}
+
+/* body {
+  color: (var(--foreground));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      (var(--background-end))
+    (var(--background-start)));
+} */
+canvas {
+  touch-action: none;
+}
+/* Hide scrollbar universally */
+.custom-scrollbar {
+  overflow: hidden; /* Hide scrollbar for all browsers */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none; /* Hide scrollbar on WebKit browsers */
+}
+
+.custom-scrollbar {
+  -ms-overflow-style: none; /* Hide scrollbar on Internet Explorer and Edge */
+  scrollbar-width: none; /* Hide scrollbar on Firefox */
+}
+
+/* Optional: Ensure content is scrollable */
+.custom-scrollbar {
+  overflow: auto; /* Enable scrolling functionality */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 10s linear infinite;
+}
+
+@keyframes fadeInDrop {
+  0% {
+      opacity: 0;
+      transform: translateY(-10px); /* Start slightly above */
+  }
+  100% {
+      opacity: 1;
+      transform: translateY(0); /* End at the normal position */
+  }
+}
+
+/* Zoom effect for images */
+.zoom-effect {
+  transition: transform 0.3s ease; /* Smooth transition for the zoom */
+}
+
+.zoom-effect:hover {
+  transform: scale(1.8); /* Scale up image on hover */
+}
