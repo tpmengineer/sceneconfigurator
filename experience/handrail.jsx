@@ -20,6 +20,6 @@ function Handrail(props) {
   )
 }
 
-useGLTF.preload('/handrail.glb')
+useGLTF.preload('/models/handrail.glb')
 
 export default Handrail

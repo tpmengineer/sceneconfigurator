@@ -33,6 +33,6 @@ function SceneWall(props) {
   )
 }
 
-useGLTF.preload('/wall_sample.glb')
+useGLTF.preload('/models/wall_sample.glb')
 
 export default SceneWall

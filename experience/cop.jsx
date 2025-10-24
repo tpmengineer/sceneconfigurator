@@ -32,6 +32,6 @@ function COP(props) {
   )
 }
 
-useGLTF.preload('/cop.glb')
+useGLTF.preload('/models/cop.glb')
 
 export default COP
