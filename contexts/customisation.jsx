@@ -152,10 +152,10 @@ const floor_materials = [
 
   const handrail_models = [
     {
-      model: "Handrail_1",
+      model: "Shaft and Post",
     },
     {
-      model: "Handrail_2",
+      model: "Returned",
     },];
 
     const handrail_colours = [
@@ -193,7 +193,7 @@ const floor_materials = [
       },
       {
         name: "Wall Lighting",
-        value: false,
+        value: true,
       }
     ]
 
@@ -229,7 +229,7 @@ const CustomisationContext = createContext({});
 
 export const CustomisationProvider = (props) => {
     const [floor_material, setFloorMaterial] = useState(floor_materials[3]);
-  const [ceiling_material, setCeilingMaterial] = useState(ceiling_materials[0]);
+  const [ceiling_material, setCeilingMaterial] = useState(ceiling_materials[8]);
     const [wall_material, setWallMaterial] = useState(wall_materials[8]);
 
   const [ceiling_shadow, setCeilingShadow] = useState(ceiling_shadows[1]);
@@ -251,6 +251,9 @@ export const CustomisationProvider = (props) => {
     const [width, setWidth] = useState(1.1);
     const [depth, setDepth] = useState(1.4);
     const [travel, setTravel] = useState(2.8);
+
+  // Scene view state for UI highlights and workflow
+  const [activeView, setActiveView] = useState("default");
 
     const [maxWidth, setMaxWidth] = useState(1.1);
     const [maxDepth, setMaxDepth] = useState(1.4);
@@ -333,7 +336,11 @@ export const CustomisationProvider = (props) => {
           minDepth,
           setMinDepth,
           minWidth,
-          setMinWidth
+          setMinWidth,
+
+          // Scene view tracking
+          activeView,
+          setActiveView
         }}
         >
         {props.children}

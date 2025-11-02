@@ -14,8 +14,8 @@ function Handrail(props) {
   const { nodes, materials } = useGLTF('/models/handrail.glb')
   return (
     <group {...props} dispose={null} rotation={[0, Math.PI/2, -Math.PI/2]}>
-      <mesh geometry={nodes['AL_Handrail-1'].geometry} material={handrailMaterial} visible={handrail_model === 'Handrail_1'}/>
-      <mesh geometry={nodes['AL_Handrail_Returned-2'].geometry} material={handrailMaterial} rotation={[Math.PI / 2, -Math.PI / 2, 0]} visible={handrail_model === 'Handrail_2'}/>
+      <mesh geometry={nodes['AL_Handrail-1'].geometry} material={handrailMaterial} visible={handrail_model === 'Shaft and Post'}/>
+      <mesh geometry={nodes['AL_Handrail_Returned-2'].geometry} material={handrailMaterial} rotation={[Math.PI / 2, -Math.PI / 2, 0]} visible={handrail_model === 'Returned'}/>
     </group>
   )
 }

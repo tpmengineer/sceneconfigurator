@@ -36,7 +36,7 @@ import Mirror from "@/experience/mirror"
 import SceneWall from "@/experience/wall_sample"
 
 import gsap from "gsap";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function Model(props) {
 
@@ -278,6 +278,8 @@ function Model(props) {
 
 const AdvancedConfigurator = () => {
   const cameraRef = useRef();
+  const targetRef = useRef(new THREE.Vector3(0, 0, 0));
+  const [isDefaultView, setIsDefaultView] = useState(true);
 
   const {
     view_booleans,
@@ -286,6 +288,8 @@ const AdvancedConfigurator = () => {
     travel,
     setShowCarOnly,
     setDoorModel,
+    activeView,
+    setActiveView,
 
   } = useCustomisation(); 
 
@@ -334,43 +338,94 @@ const AdvancedConfigurator = () => {
         z: 5, // Move camera closer
         duration: 1.5,
         ease: "power2.inOut",
+        onUpdate: () => {
+          cameraRef.current.lookAt(targetRef.current);
+        }
       });
     }
   }, [showCarOnly, travel]);
 
   // Scene navigation events: zoom in/out/reset handled via DOM CustomEvents
   useEffect(() => {
-    const defaultCam = { x: 0, y: 0.3, z: 5 };
+    const defaultCam = { x: 0, y: 0.5, z: 5 };
+    const defaultTarget = { x: 0, y: 0, z: 0 };
     const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
     const onZoomIn = () => {
       if (!cameraRef.current) return;
       const z = clamp(cameraRef.current.position.z - 0.5, 2.5, 12);
-      gsap.to(cameraRef.current.position, { z, duration: 0.3, ease: "power2.out" });
+      gsap.to(cameraRef.current.position, { z, duration: 0.3, ease: "power2.out", onUpdate: () => cameraRef.current.lookAt(targetRef.current) });
     };
     const onZoomOut = () => {
       if (!cameraRef.current) return;
       const z = clamp(cameraRef.current.position.z + 0.5, 2.5, 12);
-      gsap.to(cameraRef.current.position, { z, duration: 0.3, ease: "power2.out" });
+      gsap.to(cameraRef.current.position, { z, duration: 0.3, ease: "power2.out", onUpdate: () => cameraRef.current.lookAt(targetRef.current) });
     };
     const onReset = () => {
       if (!cameraRef.current) return;
-      gsap.to(cameraRef.current.position, { ...defaultCam, duration: 0.6, ease: "power2.inOut" });
+      gsap.to(cameraRef.current.position, { ...defaultCam, duration: 0.6, ease: "power2.inOut", onUpdate: () => cameraRef.current.lookAt(targetRef.current) });
+      gsap.to(targetRef.current, { ...defaultTarget, duration: 0.6, ease: "power2.inOut", onUpdate: () => cameraRef.current && cameraRef.current.lookAt(targetRef.current) });
+      // Re-enable interactive range when resetting to default
+      setIsDefaultView(true);
+      setActiveView && setActiveView("default");
+    };
+
+    // New: preset camera views (position + focus target)
+    const onSetView = (e) => {
+      if (!cameraRef.current) return;
+  const name = (e && e.detail) || "default";
+      const views = {
+        default: { pos: { x: 0, y: 0.5, z: 5 }, target: { x: 0, y: 0, z: 0 } },
+        walls:   { pos: { x: 2, y: 0.7, z: 5 }, target: {  x: 0, y: 0, z: 0  } },
+        ceiling: { pos: { x: 0, y: 0.2, z: 4 }, target: { x: 0, y: 1, z: 0 } },
+        door:    { pos: { x: 0, y: 1.0, z: 3.2 }, target: { x: 0, y: 0.6, z: 0 } },
+        floor:   { pos: { x: 0.3, y: 0.2, z: 3 }, target: { x: 0, y: -0.5, z: 0 } },
+        cop:     { pos: { x: -1.6, y: 0.6, z: 3 }, target: {  x: 0, y: 0, z: 0 } },
+        handrail: { pos: { x: 1.6, y: 1.0, z: 3 }, target: { x: 0, y: 0, z: 0 } },
+
+      };
+      const def = views.default;
+      const { pos, target } = views[name] || def;
+  // Lock/unlock controls depending on view
+  const isDef = name === "default";
+  setIsDefaultView(isDef);
+      setActiveView && setActiveView(name);
+      // Smoothly animate camera and target to new view
+      gsap.to(cameraRef.current.position, {
+        x: pos.x, y: pos.y, z: pos.z,
+        duration: 1,
+        ease: "power2.inOut",
+        onUpdate: () => cameraRef.current.lookAt(targetRef.current),
+      });
+      gsap.to(targetRef.current, {
+        x: target.x, y: target.y, z: target.z,
+        duration: 1,
+        ease: "power2.inOut",
+        onUpdate: () => cameraRef.current && cameraRef.current.lookAt(targetRef.current),
+      });
     };
 
     window.addEventListener("scene-zoom-in", onZoomIn);
     window.addEventListener("scene-zoom-out", onZoomOut);
     window.addEventListener("scene-reset", onReset);
+    window.addEventListener("scene-set-view", onSetView);
 
     return () => {
       window.removeEventListener("scene-zoom-in", onZoomIn);
       window.removeEventListener("scene-zoom-out", onZoomOut);
       window.removeEventListener("scene-reset", onReset);
+      window.removeEventListener("scene-set-view", onSetView);
     };
   }, []);
 
   let lightingIntensity = 0.5
   { wallLighting && (lightingIntensity = 0.71) }
+
+  // Interactive ranges for PresentationControls
+  const polarRange = isDefaultView ? [-Math.PI / 12, Math.PI / 6] : [0, 0];
+  const azimuthRange = isDefaultView ? [-Math.PI / 6, Math.PI / 6] : [0, 0];
+  const snapEnabled = !isDefaultView; // enable spring snapping to 0 in locked views
+  const springConfig = { mass: 1, tension: 100, friction: 26 };
 
   return (
     <>
@@ -412,8 +467,10 @@ const AdvancedConfigurator = () => {
           speed={1.5}
           global
           zoom={1.1}
-          polar={[-Math.PI / 12, Math.PI / 6]}
-          azimuth={[-Math.PI / 6, Math.PI / 6]}
+          polar={polarRange}
+          azimuth={azimuthRange}
+          snap={snapEnabled}
+          config={springConfig}
         >
           {/* <Stage adjustCamera={false} shadows={false}>
             <Float speed={1} rotationIntensity={0.5} floatIntensity={0.1} floatingRange={[-0.05, 0.05]}>
