@@ -49,17 +49,17 @@ const CategoryItem = ({ icon: Icon, label, active, onClick }) => (
 
 export default function RightConfigPanel() {
   const [activeTab, setActiveTab] = useState("DOOR");
-  const [materialOpen, setMaterialOpen] = useState(false);      // Walls material
+  const [materialOpen, setMaterialOpen] = useState(true);      // Walls material (first dropdown open by default)
   const [lightOpen, setLightOpen] = useState(false);            // Walls light
   const [shadowOpen, setShadowOpen] = useState(false);          // Walls shadowline
-  const [doorModelOpen, setDoorModelOpen] = useState(false);
+  const [doorModelOpen, setDoorModelOpen] = useState(true);     // Door model (first dropdown)
   const [doorColourOpen, setDoorColourOpen] = useState(false);
-  const [handrailModelOpen, setHandrailModelOpen] = useState(false);
+  const [handrailModelOpen, setHandrailModelOpen] = useState(true); // Handrail model (first dropdown)
   const [handrailColourOpen, setHandrailColourOpen] = useState(false);
-  const [floorOpen, setFloorOpen] = useState(false);
-  const [ceilingMaterialOpen, setCeilingMaterialOpen] = useState(false);
+  const [floorOpen, setFloorOpen] = useState(true);             // Floor material (first dropdown)
+  const [ceilingMaterialOpen, setCeilingMaterialOpen] = useState(true); // Ceiling material (first dropdown)
   const [ceilingShadowOpen, setCeilingShadowOpen] = useState(false);
-  const [copOpen, setCopOpen] = useState(false);
+  const [copOpen, setCopOpen] = useState(true);                 // COP colour (first dropdown)
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const {
     // Walls
