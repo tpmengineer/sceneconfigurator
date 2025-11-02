@@ -17,6 +17,7 @@ import PhoenixFloorFrame from "@/experience/framing_phoenix_floor";
 import PhoenixRoofFrame from "@/experience/framing_phoenix_roof"
 
 import LaminexPanel from "@/experience/laminex"
+import LaminexPanelCeiling from "@/experience/laminex_ceiling";
 import Shadowline from "@/experience/shadowline"
 import FloorPanel from "@/experience/floor_panel"
 
@@ -46,12 +47,14 @@ function Model(props) {
       hideReturns,
       isDualEntry,
       door_model,
+      showDoor,
       width,
       depth,
       travel,
     } = useCustomisation(); 
 
   const shaftRef = useRef();
+  const doorRef = useRef();
 
   // GSAP animation effect
   useEffect(() => {
@@ -69,6 +72,12 @@ function Model(props) {
       });
     }
   }, [showCarOnly]);
+
+  // Toggle entire door group's visibility (no material transparency changes)
+  useEffect(() => {
+    if (!doorRef.current) return;
+    doorRef.current.visible = !!showDoor;
+  }, [showDoor]);
 
   
 
@@ -143,35 +152,34 @@ function Model(props) {
         <SceneWall/>
       </mesh>
 
-      <mesh position={[width/2-0.016,0.5,depth/2-0.4]}><COP/></mesh>
-      <mesh position={[-width/2+0.02,-height/2+0.9,0]}><Handrail/></mesh>
-
-      <PhoenixSideLeftFrame w={width} d={depth} h={height}/>
-      <PhoenixSideRightFrame w={width} d={depth} h={height}/>
-      
-      {!hideReturns && (<PhoenixReturnsFrame w={width} d={depth} h={height}/>)}
-      <PhoenixFloorFrame w={width} d={depth} h={height}/>
-      <PhoenixRoofFrame w={width} d={depth} h={height}/>
-      <FloorPanel w={width} d={depth} h={height}/>
-
-      {!isDualEntry && (<LaminexPanel width={width} height={height-0.05} position={[0, 0, -depth/2+0.00055]} rotation={[0, 0, 0]}/>)}
-      {!isDualEntry && (<PhoenixBackFrame w={width} d={depth} h={height}/>)}
-      {!isDualEntry && (<Shadowline width={width} height={height} cutoutWidth={width-0.15} cutoutHeight={height-0.15} position={[0, 0, -depth/2]} rotation={[0, 0, 0]}/>)}
-      {isDualEntry && (<mesh position={[0, 0, 0]} rotation={[0, Math.PI, 0]}>
+      <group position={[0, 0, -0.03]}>
+        <mesh position={[width/2-0.016,0.5,depth/2-0.4]}><COP/></mesh>
+        <mesh position={[-width/2+0.02,-height/2+0.9,0]}><Handrail/></mesh>
+        <PhoenixSideLeftFrame w={width} d={depth} h={height}/>
+        <PhoenixSideRightFrame w={width} d={depth} h={height}/>
+        
         {!hideReturns && (<PhoenixReturnsFrame w={width} d={depth} h={height}/>)}
-      </mesh>)}
-
-      <LaminexPanel width={depth} height={height-0.05} position={[width/2-0.00055, 0, 0]} rotation={[0, -Math.PI/2, 0]} lighting={wallLighting}/>
-      <LaminexPanel width={depth} height={height-0.05} position={[-width/2+0.00055, 0, 0]} rotation={[0, Math.PI/2, 0]} lighting={wallLighting}/>
-      <LaminexPanel width={width} height={depth-0.05} position={[0, height/2-0.00055, 0]} rotation={[Math.PI/2, 0, 0]} lighting={true}/>
-
-      {/* <mesh  position={[0, 0, -depth/2+0.02]}>
-      <Mirror width={depth} height={height}/>
-        </mesh> */}
-      
-      <Shadowline width={depth} height={height} cutoutWidth={depth-0.15} cutoutHeight={height-0.15} position={[-width/2, 0, 0]} rotation={[0, Math.PI/2, 0]}/>
-      <Shadowline width={depth} height={height} cutoutWidth={depth-0.15} cutoutHeight={height-0.15} position={[width/2, 0, 0]} rotation={[0, -Math.PI/2, 0]}/>
-      <Shadowline width={width} height={depth} cutoutWidth={width-0.15} cutoutHeight={depth-0.15} position={[0, height/2, 0]} rotation={[Math.PI/2, 0, 0]}/>
+        <PhoenixFloorFrame w={width} d={depth} h={height}/>
+        <PhoenixRoofFrame w={width} d={depth} h={height}/>
+        <FloorPanel w={width} d={depth} h={height}/>
+        {!isDualEntry && (<LaminexPanel width={width} height={height-0.05} position={[0, 0, -depth/2+0.00055]} rotation={[0, 0, 0]}/>)}
+        {!isDualEntry && (<PhoenixBackFrame w={width} d={depth} h={height}/>)}
+        {!isDualEntry && (<Shadowline width={width} height={height} cutoutWidth={width-0.15} cutoutHeight={height-0.15} position={[0, 0, -depth/2]} rotation={[0, 0, 0]}/>)}
+        {isDualEntry && (<mesh position={[0, 0, 0]} rotation={[0, Math.PI, 0]}>
+          {!hideReturns && (<PhoenixReturnsFrame w={width} d={depth} h={height}/>)}
+        </mesh>)}
+        <LaminexPanel width={depth} height={height-0.05} position={[width/2-0.00055, 0, 0]} rotation={[0, -Math.PI/2, 0]} lighting={wallLighting}/>
+        <LaminexPanel width={depth} height={height-0.05} position={[-width/2+0.00055, 0, 0]} rotation={[0, Math.PI/2, 0]} lighting={wallLighting}/>
+        {/* Ceiling panel */}
+        <LaminexPanelCeiling width={width} height={depth-0.05} position={[0, height/2-0.00055, 0]} rotation={[Math.PI/2, 0, 0]} lighting={true}/>
+        {/* <mesh  position={[0, 0, -depth/2+0.02]}>
+        <Mirror width={depth} height={height}/>
+          </mesh> */}
+        
+        <Shadowline width={depth} height={height} cutoutWidth={depth-0.15} cutoutHeight={height-0.15} position={[-width/2, 0, 0]} rotation={[0, Math.PI/2, 0]}/>
+        <Shadowline width={depth} height={height} cutoutWidth={depth-0.15} cutoutHeight={height-0.15} position={[width/2, 0, 0]} rotation={[0, -Math.PI/2, 0]}/>
+        <Shadowline width={width} height={depth} cutoutWidth={width-0.15} cutoutHeight={depth-0.15} position={[0, height/2, 0]} rotation={[Math.PI/2, 0, 0]}/>
+      </group>
 
       <group ref={shaftRef} position={[0,0,0]}> //shaft
         {/* <group position={[0, ground, 0]}>
@@ -225,15 +233,7 @@ function Model(props) {
           </group>
         ))} */}
 
-        <group position={[0,ground+0.1,shaft_depth/2-0.2]}>
-          {(door_model === "slide" ? <Fermator/> : <PhoenixDoor/>)}
-          {/* <mesh position={[0, -0.008, -0.02]} rotation={[Math.PI / 2, 0, 0]}>
-            <Batten width={shaft_width - 0.075} depth={0.04} length={0.04} />
-          </mesh>
-          <mesh position={[0, -0.008+2.185, -0.02]} rotation={[Math.PI / 2, 0, 0]}>
-            <Batten width={shaft_width - 0.075} depth={0.04} length={0.04} />
-          </mesh> */}
-        </group>
+        
 
         //1st floor doors
         {/* {!isDualEntry && (
@@ -259,6 +259,16 @@ function Model(props) {
         </group>)} */}
 
       </group>
+
+    <group ref={doorRef} position={[0,ground+0.1,shaft_depth/2-0.2]}>
+          {(door_model === "slide" ? <Fermator/> : <PhoenixDoor/>)}
+          {/* <mesh position={[0, -0.008, -0.02]} rotation={[Math.PI / 2, 0, 0]}>
+            <Batten width={shaft_width - 0.075} depth={0.04} length={0.04} />
+          </mesh>
+          <mesh position={[0, -0.008+2.185, -0.02]} rotation={[Math.PI / 2, 0, 0]}>
+            <Batten width={shaft_width - 0.075} depth={0.04} length={0.04} />
+          </mesh> */}
+        </group>
     
     </group>
   );
@@ -320,13 +330,44 @@ const AdvancedConfigurator = () => {
     if (cameraRef.current) {
       gsap.to(cameraRef.current.position, {
         x: 0,
-        y: 0.3, // Move camera higher to focus on car
+        y: 0.5, // Move camera higher to focus on car
         z: 5, // Move camera closer
         duration: 1.5,
         ease: "power2.inOut",
       });
     }
   }, [showCarOnly, travel]);
+
+  // Scene navigation events: zoom in/out/reset handled via DOM CustomEvents
+  useEffect(() => {
+    const defaultCam = { x: 0, y: 0.3, z: 5 };
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+    const onZoomIn = () => {
+      if (!cameraRef.current) return;
+      const z = clamp(cameraRef.current.position.z - 0.5, 2.5, 12);
+      gsap.to(cameraRef.current.position, { z, duration: 0.3, ease: "power2.out" });
+    };
+    const onZoomOut = () => {
+      if (!cameraRef.current) return;
+      const z = clamp(cameraRef.current.position.z + 0.5, 2.5, 12);
+      gsap.to(cameraRef.current.position, { z, duration: 0.3, ease: "power2.out" });
+    };
+    const onReset = () => {
+      if (!cameraRef.current) return;
+      gsap.to(cameraRef.current.position, { ...defaultCam, duration: 0.6, ease: "power2.inOut" });
+    };
+
+    window.addEventListener("scene-zoom-in", onZoomIn);
+    window.addEventListener("scene-zoom-out", onZoomOut);
+    window.addEventListener("scene-reset", onReset);
+
+    return () => {
+      window.removeEventListener("scene-zoom-in", onZoomIn);
+      window.removeEventListener("scene-zoom-out", onZoomOut);
+      window.removeEventListener("scene-reset", onReset);
+    };
+  }, []);
 
   let lightingIntensity = 0.5
   { wallLighting && (lightingIntensity = 0.71) }

@@ -34,6 +34,7 @@ const Phoenix = (props) => {
     light_color,
 
     handrail_model,
+    cop_colour,
   } = useCustomisation();
 
   const woodProps = useTexture({
@@ -94,16 +95,16 @@ const Phoenix = (props) => {
       <meshPhysicalMaterial color='#E0E5E5' roughness='0.4' metalness='1'/>
       </mesh>
 
-      <mesh geometry={nodes.COP.geometry} position={[0.417, 0.952, -0.002]}>
-      <meshStandardMaterial color='#E0E5E5' roughness='0.4' metalness='1'/>
+  <mesh geometry={nodes.COP.geometry} position={[0.417, 0.952, -0.002]}>
+  <meshPhysicalMaterial color={cop_colour?.color || '#E0E5E5'} roughness={0.4} metalness={1}/>
       </mesh>
 
       <mesh geometry={nodes.RoofPanel.geometry} material={nodes.RoofPanel.material} position={[0, 1.981, -0.011]} rotation={[Math.PI / 2, Math.PI / 2, 0]} >
-        <meshStandardMaterial color={ceiling_material.color}/>
+        <meshStandardMaterial color={ceiling_material.color || '#E0E5E5'}/>
       </mesh>
       
       <mesh geometry={nodes.WallPanel.geometry} position={[0, 0.984, -0.635]} rotation={[0, Math.PI / 2, 0]} >
-        <meshStandardMaterial color={wall_material.color}/>
+        <meshStandardMaterial color={wall_material.color || '#E0E5E5'}/>
       </mesh>
     
       

@@ -33,6 +33,8 @@ const floor_materials = [
     image: 'materials/floor/grey_carpet.png'
   },];
 
+  // Ceiling will use the same panel materials and shadowline options as walls
+
   const wall_materials = [
     {
       color: "",
@@ -144,6 +146,10 @@ const floor_materials = [
       
       ];
 
+  // Alias ceiling options to use the same choices as walls
+  const ceiling_materials = wall_materials;
+  const ceiling_shadows = wall_shadows;
+
   const handrail_models = [
     {
       model: "Handrail_1",
@@ -183,7 +189,7 @@ const floor_materials = [
       },
       {
         name: "Hide Returns",
-        value: false,
+        value: true,
       },
       {
         name: "Wall Lighting",
@@ -223,8 +229,10 @@ const CustomisationContext = createContext({});
 
 export const CustomisationProvider = (props) => {
     const [floor_material, setFloorMaterial] = useState(floor_materials[3]);
+  const [ceiling_material, setCeilingMaterial] = useState(ceiling_materials[0]);
     const [wall_material, setWallMaterial] = useState(wall_materials[8]);
 
+  const [ceiling_shadow, setCeilingShadow] = useState(ceiling_shadows[1]);
     const [wall_shadow, setWallShadow] = useState(wall_shadows[2]);
 
     const [handrail_model, setHandrailModel] = useState(handrail_models[0].model)
@@ -237,6 +245,8 @@ export const CustomisationProvider = (props) => {
 
     const [door_model, setDoorModel] = useState(door_models[0].model)
     const [door_colour, setDoorColour] = useState(door_colours[0])
+  const [cop_colour, setCopColour] = useState(door_colours[1])
+  const [showDoor, setShowDoor] = useState(true)
 
     const [width, setWidth] = useState(1.1);
     const [depth, setDepth] = useState(1.4);
@@ -254,16 +264,24 @@ export const CustomisationProvider = (props) => {
           floor_materials,
           setFloorMaterial,
 
+          ceiling_material,
+          ceiling_materials,
+          setCeilingMaterial,
+
 
           wall_material,
           wall_materials,
           setWallMaterial,
 
+          ceiling_shadow,
+          ceiling_shadows,
+          setCeilingShadow,
           wall_shadow,
           wall_shadows,
           setWallShadow,
 
           handrail_model,
+          handrail_models,
           setHandrailModel,
 
           handrail_colour,
@@ -291,6 +309,12 @@ export const CustomisationProvider = (props) => {
           door_colour,
           door_colours,
           setDoorColour,
+
+          cop_colour,
+          setCopColour,
+
+          showDoor,
+          setShowDoor,
 
           width,
           setWidth,

@@ -11,7 +11,7 @@ function Fermator(props) {
   
   const { nodes, materials } = useGLTF('/models/orion_door.glb')
   return (
-    <group {...props} dispose={null} rotation={[-Math.PI/2,0,Math.PI]} position={[0.7,0,-0.1]}>
+    <group {...props} dispose={null} rotation={[-Math.PI/2,0,Math.PI]} position={[0.7,0,-0.14]}>
       <mesh geometry={nodes.mesh_0.geometry} material={doorMaterial} />
       <mesh geometry={nodes.mesh_0_1.geometry} material={doorMaterial} />
     </group>

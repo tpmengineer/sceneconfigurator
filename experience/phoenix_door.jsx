@@ -14,7 +14,7 @@ function PhoenixDoor(props) {
 
   const { nodes, materials } = useGLTF('/models/phoenix_door.glb')
   materials['color-1'].transparent = true
-  materials['color-1'].opacity = 0.7
+  materials['color-1'].opacity = 0.9
   return (
     <group {...props} dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]}>

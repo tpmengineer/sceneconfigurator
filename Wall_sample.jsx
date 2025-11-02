@@ -10,15 +10,14 @@ export function Model(props) {
   const { nodes, materials } = useGLTF('/wall_sample.glb')
   return (
     <group {...props} dispose={null}>
-      <group position={[0.416, 0, 2.9]} rotation={[0, Math.PI / 2, 0]}>
-        <mesh geometry={nodes.Base001.geometry} material={nodes.Base001.material} position={[0, 0.172, -0.041]} />
-      </group>
       <mesh geometry={nodes.Big_Monstera_plant.geometry} material={nodes.Big_Monstera_plant.material} position={[0.375, 0, -1.286]} rotation={[Math.PI, -1.027, Math.PI]} scale={0.557}>
         <mesh geometry={nodes.plant.geometry} material={nodes.plant.material} position={[-0.167, 2.19, 0.052]} />
       </mesh>
       <mesh geometry={nodes.Plane.geometry} material={nodes.Plane.material} />
       <mesh geometry={nodes.Cube001.geometry} material={nodes.Cube001.material} />
       <mesh geometry={nodes.Cube002.geometry} material={nodes.Cube002.material} />
+      <mesh geometry={nodes.path1.geometry} material={nodes.path1.material} position={[0.017, 1.281, 4.203]} rotation={[-Math.PI / 2, 0, -Math.PI / 2]} scale={-21.219} />
+      <mesh geometry={nodes.Base001.geometry} material={nodes.Base001.material} position={[0.375, 0.172, 2.9]} rotation={[0, Math.PI / 2, 0]} />
     </group>
   )
 }

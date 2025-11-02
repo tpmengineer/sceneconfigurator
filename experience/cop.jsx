@@ -7,9 +7,9 @@ function COP(props) {
   const { nodes, materials } = useGLTF('/models/cop.glb')
 
   const {
-    handrail_colour} = useCustomisation(); 
+    cop_colour} = useCustomisation(); 
   
-  const handrailMaterial = useMemo(() => new THREE.MeshStandardMaterial({ color: handrail_colour.color, metalness: handrail_colour.metalness, roughness: handrail_colour.roughness }), [handrail_colour]);
+  const handrailMaterial = useMemo(() => new THREE.MeshStandardMaterial({ color: cop_colour.color, metalness: cop_colour.metalness, roughness: cop_colour.roughness }), [cop_colour]);
 
   return (
     <group {...props} dispose={null} rotation = {[Math.PI / 2, 0, Math.PI/2]}>

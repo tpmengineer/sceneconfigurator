@@ -10,6 +10,11 @@ import Filter from '@/app/components/Filter'
 import ToggleSwitch from "@/app/ui/toggle"; 
 import { useCustomisation } from '@/contexts/customisation';
 import CarViewToggle from '@/app/ui/CarViewToggle'
+import RightConfigPanel from '@/app/ui/RightConfigPanel';
+import SceneNav from '@/app/ui/SceneNav';
+import VerticalZoomControls from '@/app/ui/VerticalZoomControls';
+import TopBar from '@/app/ui/TopBar';
+import RequestQuoteFloat from '@/app/ui/RequestQuoteFloat';
 
 
 
@@ -31,8 +36,11 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex flex-col items-center justify-center bg-[#adadad] w-full h-[100vh] overflow-hidden">
-      <div className='flex flex-col lg:flex-row w-full items-center text-brand-grey'>
+    <main className="relative flex flex-col items-center justify-center bg-[#adadad] w-full h-[100vh] overflow-hidden">
+      {/* Top bar with Back and Request Quote */}
+      <TopBar />
+
+      <div className='flex flex-col lg:flex-row w-full h-full items-center text-brand-grey'>
         {/* <div className='hidden md:flex flex-col w-full md:w-4/12'>
         <div className='w-10/12'>
           <AussieLiftsLogoInline color="#9ac940"/>
@@ -54,7 +62,15 @@ export default function Home() {
         {/* <div className='flex flex-col md:flex-row md:w-8/12 justify-between'> */}
           <div className='flex w-full fixed md:relative top-6 md:top-0 left-0 h-[80vh] md:h-[100vh] bg-[#adadad] '>
             <AdvancedConfigurator/>
+            <SceneNav />
+            <VerticalZoomControls />
+            <RequestQuoteFloat />
           </div>
+
+          {/* Overlays */}
+          
+          <RightConfigPanel />
+          
           
           {/* <div className='hidden md:flex w-full md:w-5/12 py-10'><Configurator/></div> */}
 
