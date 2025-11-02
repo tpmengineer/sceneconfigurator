@@ -280,6 +280,12 @@ const AdvancedConfigurator = () => {
   const cameraRef = useRef();
   const targetRef = useRef(new THREE.Vector3(0, 0, 0));
   const [isDefaultView, setIsDefaultView] = useState(true);
+  // Rotation for PresentationControls (Euler [x, y, z])
+  const [pcRotation, setPcRotation] = useState([0, 0, 0]);
+  // Canvas readiness for event listeners
+  const [canvasReady, setCanvasReady] = useState(false);
+  // Utility: clamp a value to a min/max range
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
   const {
     view_booleans,
@@ -288,6 +294,7 @@ const AdvancedConfigurator = () => {
     travel,
     setShowCarOnly,
     setDoorModel,
+    setShowDoor,
     activeView,
     setActiveView,
 
@@ -368,41 +375,55 @@ const AdvancedConfigurator = () => {
       // Re-enable interactive range when resetting to default
       setIsDefaultView(true);
       setActiveView && setActiveView("default");
+      // Reset PresentationControls rotation to default orientation
+      setPcRotation([0, 0, 0]);
     };
 
     // New: preset camera views (position + focus target)
     const onSetView = (e) => {
-      if (!cameraRef.current) return;
-  const name = (e && e.detail) || "default";
-      const views = {
-        default: { pos: { x: 0, y: 0.5, z: 5 }, target: { x: 0, y: 0, z: 0 } },
-        walls:   { pos: { x: 2, y: 0.7, z: 5 }, target: {  x: 0, y: 0, z: 0  } },
-        ceiling: { pos: { x: 0, y: 0.2, z: 4 }, target: { x: 0, y: 1, z: 0 } },
-        door:    { pos: { x: 0, y: 1.0, z: 3.2 }, target: { x: 0, y: 0.6, z: 0 } },
-        floor:   { pos: { x: 0.3, y: 0.2, z: 3 }, target: { x: 0, y: -0.5, z: 0 } },
-        cop:     { pos: { x: -1.6, y: 0.6, z: 3 }, target: {  x: 0, y: 0, z: 0 } },
-        handrail: { pos: { x: 1.6, y: 1.0, z: 3 }, target: { x: 0, y: 0, z: 0 } },
-
+      const name = (e && e.detail) || "default";
+      // Map preset names to PresentationControls rotation (Euler [x, y, z])
+      // Keep within your existing polar/azimuth limits: polar [-15°, +30°], azimuth [-30°, +30°]
+      const rotations = {
+        default:  [0.0,  0.0, 0.0],            // centered
+        walls:    [0.12, -0.22, 0.0],          // slight pitch up, azimuth right
+        ceiling:  [-0.25,  0.0,  0.0],          // look a bit more from above
+        door:     [0.15,  0.0,  0.0],          // slight pitch towards front
+        floor:    [-0.12, 0.08, 0.0],          // slight pitch down, small azimuth
+        cop:      [0.10,  0.28, 0.0],          // yaw left to bring COP into view
+        handrail: [0.18, -0.28, 0.0],          // yaw right to bring handrail into view
       };
-      const def = views.default;
-      const { pos, target } = views[name] || def;
-  // Lock/unlock controls depending on view
-  const isDef = name === "default";
-  setIsDefaultView(isDef);
+      // Also set camera's z position (same variable modified by zoom in/out)
+      const zByView = {
+        default: 5.0,
+        walls:   5.0,
+        ceiling: 4.2,
+        door:    3.2,
+        floor:   3.0,
+        cop:     3.2,
+        handrail:3.2,
+      };
+      const rot = rotations[name] || rotations.default;
+      // Lock/unlock controls depending on view
+      const isDef = name === "default";
+      setIsDefaultView(isDef);
       setActiveView && setActiveView(name);
-      // Smoothly animate camera and target to new view
-      gsap.to(cameraRef.current.position, {
-        x: pos.x, y: pos.y, z: pos.z,
-        duration: 1,
-        ease: "power2.inOut",
-        onUpdate: () => cameraRef.current.lookAt(targetRef.current),
-      });
-      gsap.to(targetRef.current, {
-        x: target.x, y: target.y, z: target.z,
-        duration: 1,
-        ease: "power2.inOut",
-        onUpdate: () => cameraRef.current && cameraRef.current.lookAt(targetRef.current),
-      });
+      // If a focus view (non-default) is selected, hide the car door
+      if (!isDef) {
+        setShowDoor && setShowDoor(false);
+      }
+      // Update PresentationControls rotation (spring will interpolate)
+      setPcRotation(rot);
+      // Animate camera z to preset value using same clamped range as zoom in/out
+      if (cameraRef.current) {
+        const zTarget = clamp(zByView[name] ?? zByView.default, 2.5, 12);
+        gsap.to(cameraRef.current.position, {
+          z: zTarget,
+          duration: 0.6,
+          ease: "power2.inOut",
+          onUpdate: () => cameraRef.current && cameraRef.current.lookAt(targetRef.current),
+        });
+      }
     };
 
     window.addEventListener("scene-zoom-in", onZoomIn);
@@ -431,6 +452,71 @@ const AdvancedConfigurator = () => {
   const snapEnabled = !isDefaultView; // enable spring snapping to 0 in locked views
   const springConfig = { mass: 1, tension: 100, friction: 26 };
 
+  // Detect user rotation attempts at the canvas level (not via PresentationControls)
+  const canvasElRef = useRef(null);
+  useEffect(() => {
+    if (!canvasReady) return;
+    const el = canvasElRef.current;
+    if (!el) return;
+    let dragging = false;
+    let unlockedThisDrag = false;
+    let startX = 0, startY = 0;
+    const threshold = 4; // pixels
+
+    const onPointerDown = (e) => {
+      dragging = true;
+      unlockedThisDrag = false;
+      startX = e.clientX;
+      startY = e.clientY;
+    };
+    const onPointerMove = (e) => {
+      if (!dragging || unlockedThisDrag) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (Math.hypot(dx, dy) > threshold) {
+        // Consider this a rotate attempt; if in focus view, unlock it
+        if (!isDefaultView) {
+          setIsDefaultView(true);
+          setActiveView && setActiveView("default");
+        }
+        unlockedThisDrag = true;
+      }
+    };
+    const onPointerUp = () => {
+      dragging = false;
+      unlockedThisDrag = false;
+    };
+
+    // Wheel zoom handler (same z logic as zoom in/out buttons)
+    const onWheel = (e) => {
+      if (!cameraRef.current) return;
+      // prevent page scroll while zooming the 3D view
+      e.preventDefault();
+      const step = 0.5;
+      const dir = Math.sign(e.deltaY) || 0; // >0 scroll down -> zoom out
+      if (dir === 0) return;
+      const targetZ = clamp(cameraRef.current.position.z + dir * step, 2.5, 12);
+      gsap.to(cameraRef.current.position, {
+        z: targetZ,
+        duration: 0.2,
+        ease: "power2.out",
+        onUpdate: () => cameraRef.current && cameraRef.current.lookAt(targetRef.current),
+      });
+    };
+
+    el.addEventListener('pointerdown', onPointerDown, { passive: true });
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    window.addEventListener('pointerup', onPointerUp, { passive: true });
+    el.addEventListener('wheel', onWheel, { passive: false });
+
+    return () => {
+      el.removeEventListener('pointerdown', onPointerDown);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+      el.removeEventListener('wheel', onWheel);
+    };
+  }, [isDefaultView, canvasReady]);
+
   return (
     <>
       <Canvas
@@ -438,7 +524,7 @@ const AdvancedConfigurator = () => {
         dpr={[1, 2]}
         camera={{ position: [0, 1.5, 8], fov: 50 }}
         gl={{antialias: true}}
-        onCreated={({ camera }) => (cameraRef.current = camera)}
+  onCreated={({ camera, gl }) => { cameraRef.current = camera; canvasElRef.current = gl.domElement; setCanvasReady(true); }}
       >
         <EffectComposer>
           <Bloom intensity={0.5} luminanceThreshold={2} luminanceSmoothing={0.2} />
@@ -471,6 +557,7 @@ const AdvancedConfigurator = () => {
           speed={1.5}
           global
           zoom={1.1}
+          rotation={pcRotation}
           polar={polarRange}
           azimuth={azimuthRange}
           snap={snapEnabled}
