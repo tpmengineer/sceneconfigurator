@@ -422,8 +422,12 @@ const AdvancedConfigurator = () => {
   { wallLighting && (lightingIntensity = 0.71) }
 
   // Interactive ranges for PresentationControls
-  const polarRange = isDefaultView ? [-Math.PI / 12, Math.PI / 6] : [0, 0];
-  const azimuthRange = isDefaultView ? [-Math.PI / 6, Math.PI / 6] : [0, 0];
+  const polarRange = [-Math.PI / 12, Math.PI / 6] ;
+  // const polarRange = isDefaultView ? [-Math.PI / 12, Math.PI / 6] : [0, 0];
+
+  const azimuthRange = [-Math.PI / 6, Math.PI / 6] ;
+  // const azimuthRange = isDefaultView ? [-Math.PI / 6, Math.PI / 6] : [0, 0];
+
   const snapEnabled = !isDefaultView; // enable spring snapping to 0 in locked views
   const springConfig = { mass: 1, tension: 100, friction: 26 };
 
