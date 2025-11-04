@@ -53,14 +53,14 @@ export default function RightConfigPanel() {
   const [lightOpen, setLightOpen] = useState(false);            // Walls light
   const [shadowOpen, setShadowOpen] = useState(false);          // Walls shadowline
   const [doorModelOpen, setDoorModelOpen] = useState(true);     // Door model (first dropdown)
-  const [doorColourOpen, setDoorColourOpen] = useState(false);
+  const [doorColourOpen, setDoorColourOpen] = useState(true);
   const [handrailModelOpen, setHandrailModelOpen] = useState(true); // Handrail model (first dropdown)
   const [handrailColourOpen, setHandrailColourOpen] = useState(false);
   const [floorOpen, setFloorOpen] = useState(true);             // Floor material (first dropdown)
   const [ceilingMaterialOpen, setCeilingMaterialOpen] = useState(true); // Ceiling material (first dropdown)
   const [ceilingShadowOpen, setCeilingShadowOpen] = useState(false);
   const [copOpen, setCopOpen] = useState(true);                 // COP colour (first dropdown)
-  const [showCategoryMenu, setShowCategoryMenu] = useState(false);
+  const [showCategoryMenu, setShowCategoryMenu] = useState(true);
   const {
     // Walls
     wall_material,
@@ -75,8 +75,9 @@ export default function RightConfigPanel() {
     door_model,
     door_models,
     setDoorModel,
-    door_colour,
-    door_colours,
+  door_colour,
+  door_colours,
+  door_colours_current,
     setDoorColour,
   showDoor,
   setShowDoor,
@@ -181,12 +182,12 @@ export default function RightConfigPanel() {
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="px-4 py-2 border-b border-gray-100 bg-white"
           >
-            <CategoryItem icon={DoorOpen} label="Door Options" active={activeTab === "DOOR"} onClick={() => { setActiveTab("DOOR"); setShowCategoryMenu(false); }} />
-            <CategoryItem icon={Square} label="Walls" active={activeTab === "WALLS"} onClick={() => { setActiveTab("WALLS"); setShowCategoryMenu(false); }} />
-            <CategoryItem icon={Sun} label="Ceiling" active={activeTab === "CEILING"} onClick={() => { setActiveTab("CEILING"); setShowCategoryMenu(false); }} />
-            <CategoryItem icon={Hand} label="Handrail" active={activeTab === "HANDRAIL"} onClick={() => { setActiveTab("HANDRAIL"); setShowCategoryMenu(false); }} />
-            <CategoryItem icon={Layers} label="Lift Flooring" active={activeTab === "FLOOR"} onClick={() => { setActiveTab("FLOOR"); setShowCategoryMenu(false); }} />
-            <CategoryItem icon={SquareArrowUp} label="Car Operating Panel" active={activeTab === "COP"} onClick={() => { setActiveTab("COP"); setShowCategoryMenu(false); }} />
+            <CategoryItem icon={DoorOpen} label="Door Options" active={activeTab === "DOOR"} onClick={() => { setActiveTab("DOOR"); }} />
+            <CategoryItem icon={Square} label="Walls" active={activeTab === "WALLS"} onClick={() => { setActiveTab("WALLS"); }} />
+            <CategoryItem icon={Sun} label="Ceiling" active={activeTab === "CEILING"} onClick={() => { setActiveTab("CEILING"); }} />
+            <CategoryItem icon={Hand} label="Handrail" active={activeTab === "HANDRAIL"} onClick={() => { setActiveTab("HANDRAIL"); }} />
+            <CategoryItem icon={Layers} label="Lift Flooring" active={activeTab === "FLOOR"} onClick={() => { setActiveTab("FLOOR"); }} />
+            <CategoryItem icon={SquareArrowUp} label="Car Operating Panel" active={activeTab === "COP"} onClick={() => { setActiveTab("COP"); }} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -368,7 +369,7 @@ export default function RightConfigPanel() {
                   transition={{ duration: 0.2, ease: "easeOut" }}
                 >
                   <div className="mt-3 grid grid-cols-4 gap-3">
-                    {door_colours.map((c, i) => (
+                    {door_colours_current.map((c, i) => (
                       <SwatchCard
                         key={i}
                         selected={door_colour?.name === c.name}

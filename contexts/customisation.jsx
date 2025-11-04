@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useMemo, useEffect } from "react";
 
 const floor_materials = [
   {
@@ -168,8 +168,8 @@ const floor_materials = [
     {
       name: "Stainless Steel",
       color: "#f4f4f4",
-      metalness: 0.9,
-        roughness: 0.2,
+      metalness: 0.5,
+        roughness: 0.1,
     },
     {
       name: "Powdercoat Black",
@@ -208,19 +208,19 @@ const floor_materials = [
       const door_colours = [
       {
         name: "Powdercoat White",
-        color: "#f9f9f9",
+        color: "#d4d4d4",
         metalness: 0,
         roughness: 1,
       },
       {
         name: "Stainless Steel",
-        color: "#f4f4f4",
+        color: "#424245",
         metalness: 0.9,
         roughness: 0.2,
       },
       {
         name: "Powdercoat Black",
-        color: "#424245",
+        color: "#000000",
         metalness: 0,
         roughness: 1,
       },];
@@ -259,6 +259,29 @@ export const CustomisationProvider = (props) => {
     const [maxDepth, setMaxDepth] = useState(1.4);
     const [minWidth, setMinWidth] = useState(0.9);
     const [minDepth, setMinDepth] = useState(1.3);
+
+    // Separate colour sets by door model
+    const swing_door_colours = useMemo(
+      () => door_colours.filter((c) => c.name === 'Powdercoat White' || c.name === 'Powdercoat Black'),
+      [door_colours]
+    );
+    const slide_door_colours = useMemo(
+      () => door_colours.filter((c) => c.name === 'Stainless Steel' || c.name === 'Powdercoat Black'),
+      [door_colours]
+    );
+
+    // Current available set based on active model
+    const door_colours_current = useMemo(
+      () => (door_model === 'slide' ? slide_door_colours : swing_door_colours),
+      [door_model, slide_door_colours, swing_door_colours]
+    );
+
+    // Ensure selection is valid when switching models
+    useEffect(() => {
+      if (!door_colours_current.some((c) => c.name === door_colour?.name)) {
+        setDoorColour(door_colours_current[0]);
+      }
+    }, [door_model, door_colour, door_colours_current]);
 
     return (
         <CustomisationContext.Provider
@@ -311,6 +334,7 @@ export const CustomisationProvider = (props) => {
 
           door_colour,
           door_colours,
+          door_colours_current,
           setDoorColour,
 
           cop_colour,

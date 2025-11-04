@@ -30,9 +30,9 @@ function SceneWall(props) {
           </mesh>
       </group>
 
-      <mesh geometry={nodes.path1.geometry} material={nodes.path1.material} position={[0.017, 1.281, 4.203]} rotation={[-Math.PI / 2, 0, -Math.PI / 2]} scale={-21.219} >
+      {/* <mesh geometry={nodes.path1.geometry} material={nodes.path1.material} position={[0.017, 1.281, 4.203]} rotation={[-Math.PI / 2, 0, -Math.PI / 2]} scale={-21.219} >
         <meshStandardMaterial color={'#333333'} />
-      </mesh>
+      </mesh> */}
     </group>
   )
 }

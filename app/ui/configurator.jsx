@@ -40,8 +40,9 @@ const Configurator = () => {
       door_models,
       setDoorModel,
 
-      door_colour,
-      door_colours,
+  door_colour,
+  door_colours,
+  door_colours_current,
       setDoorColour,
     } = useCustomisation();
 
@@ -118,7 +119,7 @@ const Configurator = () => {
 
                   <MaterialSelector
                   title="Door Finish"
-                  materials={door_colours}
+                  materials={door_colours_current}
                   onSelectMaterial={setDoorColour}
                   />
                 

@@ -7,6 +7,7 @@ import * as THREE from 'three';
 
 import { useCustomisation } from "@/contexts/customisation";
 import { useGLTF, useTexture} from '@react-three/drei'
+import { Environment, Lightformer } from '@react-three/drei'
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 import PhoenixSideRightFrame from '@/experience/framing_phoenix_side_right'
@@ -37,6 +38,70 @@ import SceneWall from "@/experience/wall_sample"
 
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
+
+// Simple textured card generator for the reflection environment (no external files)
+function EnvImageCard({ position = [0, 0, 8], rotation = [0, 0, 0], scale = [8, 5] }) {
+  const texture = React.useMemo(() => {
+    const w = 1024, h = 512;
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    // base gradient
+    const grad = ctx.createLinearGradient(0, 0, w, 0);
+    grad.addColorStop(0, '#f2f2f2');
+    grad.addColorStop(1, '#dcdcdc');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+    // soft vertical band
+    const bandW = Math.floor(w * 0.18);
+    const bandX = Math.floor(w * 0.35);
+    const bandGrad = ctx.createLinearGradient(bandX - bandW, 0, bandX + bandW, 0);
+    bandGrad.addColorStop(0.0, 'rgba(255,255,255,0)');
+    bandGrad.addColorStop(0.5, 'rgba(255,255,255,0.35)');
+    bandGrad.addColorStop(1.0, 'rgba(255,255,255,0)');
+    ctx.fillStyle = bandGrad;
+    ctx.fillRect(bandX - bandW, 0, bandW * 2, h);
+    // subtle top vignette
+    const vig = ctx.createLinearGradient(0, 0, 0, h);
+    vig.addColorStop(0.0, 'rgba(0,0,0,0.04)');
+    vig.addColorStop(0.4, 'rgba(0,0,0,0.0)');
+    vig.addColorStop(1.0, 'rgba(0,0,0,0.0)');
+    ctx.fillStyle = vig;
+    ctx.fillRect(0, 0, w, h);
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.needsUpdate = true;
+    return tex;
+  }, []);
+
+  return (
+    <mesh position={position} rotation={rotation}>
+      <planeGeometry args={[1, 1]} />
+      {/* toneMapped=false keeps the card brightness consistent for env capture */}
+      <meshBasicMaterial map={texture} toneMapped={false} />
+      <group scale={scale} />
+    </mesh>
+  );
+}
+
+// Image-based reflection card using a texture from /public (e.g., /images/backgroundimage.png)
+function EnvImagePlane({ src = '/images/backgroundimage.png', position = [0, 0, 9], rotation = [0, 0, 0], scale = [12, 8] }) {
+  const tex = useTexture(src);
+  useEffect(() => {
+    if (!tex) return;
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.needsUpdate = true;
+    if (process.env.NODE_ENV !== 'production') {
+      console.debug('[EnvImagePlane] loaded', src, tex.image?.width, tex.image?.height);
+    }
+  }, [tex]);
+  return (
+    <mesh position={position} rotation={rotation} scale={scale}>
+      <planeGeometry args={[1, 1]} />
+      <meshBasicMaterial map={tex} toneMapped={false} />
+    </mesh>
+  );
+}
 
 function Model(props) {
 
@@ -284,8 +349,21 @@ const AdvancedConfigurator = () => {
   const [pcRotation, setPcRotation] = useState([0, 0, 0]);
   // Canvas readiness for event listeners
   const [canvasReady, setCanvasReady] = useState(false);
+  // Debug toggle to visualize environment content and reflections
+  const [envDebug, setEnvDebug] = useState(false);
   // Utility: clamp a value to a min/max range
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+  // Initialize envDebug from query string (?env=1 or ?envDebug=true)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const qs = new URLSearchParams(window.location.search);
+    const val = qs.get('env') ?? qs.get('envdebug') ?? qs.get('debugenv');
+    if (val) {
+      const on = val === '1' || val?.toLowerCase?.() === 'true' || val?.toLowerCase?.() === 'on';
+      setEnvDebug(on);
+    }
+  }, []);
 
   const {
     view_booleans,
@@ -517,20 +595,40 @@ const AdvancedConfigurator = () => {
     };
   }, [isDefaultView, canvasReady]);
 
+  // Keyboard: press "E" to toggle environment debug helpers
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.key || '').toLowerCase() === 'e') setEnvDebug((v) => !v);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   return (
     <>
       <Canvas
         
         dpr={[1, 2]}
         camera={{ position: [0, 1.5, 8], fov: 50 }}
-        gl={{antialias: true}}
-  onCreated={({ camera, gl }) => { cameraRef.current = camera; canvasElRef.current = gl.domElement; setCanvasReady(true); }}
+        gl={{ antialias: true }}
+        onCreated={({ camera, gl }) => {
+          cameraRef.current = camera;
+          canvasElRef.current = gl.domElement;
+
+          setCanvasReady(true);
+        }}
       >
+        {/* Custom reflective environment: soft emissive planes + textured cards for richer metal reflections */}
+        {/* <Environment background={false} resolution={192}>
+          <Lightformer form="rect" intensity={0.20} color="#eaeaea" position={[0, 0, 10]} scale={[12, 8]} />
+          <Lightformer form="rect" intensity={0.12} color="#ffffff" position={[6, 1.5, 0]} rotation={[0, Math.PI / 2.5, 0]} scale={[6, 6]} />
+
+        </Environment> */}
         <EffectComposer>
           <Bloom intensity={0.5} luminanceThreshold={2} luminanceSmoothing={0.2} />
         </EffectComposer>
         <ambientLight intensity={1} />
-        <pointLight position={[2, 5, 5]} intensity={1} color="#ffffff" distance={10} decay={0} />
+        <pointLight position={[2, 5, 5]} intensity={0.5} color="#ffffff" distance={10} decay={0} />
         {/* <pointLight position={[2, 5, 100]} intensity={0.5} color="#ffffff" distance={1000} decay={0} /> */}
         {/* <hemisphereLight intensity={0.7} /> */}
         {/* <directionalLight position={[5, 5, 5]}/> */}
@@ -548,7 +646,7 @@ const AdvancedConfigurator = () => {
           intensity={2}
           color="#DBE9F4"
         /> */}
-        <pointLight position={[0, 0.5, 0.1]} intensity={7.5} color="#898989" distance={1.8} decay={0} />
+        {/* <pointLight position={[0, 0.5, 0.1]} intensity={7.5} color="#898989" distance={1.8} decay={0} /> */}
         
         {/* <OrbitControls enableZoom={true} />
         <Model/> */}
