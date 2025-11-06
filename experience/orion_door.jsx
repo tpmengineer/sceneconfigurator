@@ -14,6 +14,22 @@ function Fermator(props) {
 
   const {door_colour,} = useCustomisation(); 
 
+  const blockRedMaterial = useMemo(() => new THREE.MeshStandardMaterial({
+      color: '#ff0000',
+      metalness: 0.0,
+      roughness: 0.9,
+    }), [])
+  
+    // White emissive surface: appears self-lit; note this is not an actual Light source
+    // eslint-disable-next-line no-unused-vars
+    const emissiveWhiteMaterial = useMemo(() => new THREE.MeshStandardMaterial({
+      color: '#ffffff',
+      metalness: 0.0,
+      roughness: 0.2,
+      emissive: new THREE.Color('#ffffff'),
+      emissiveIntensity: 1.8,
+    }), [])
+
   // Stainless steel shader mimics soft brushed reflections without env maps.
   const stainlessMaterial = useMemo(() => {
     const mat = createStainlessMaterial();
@@ -71,9 +87,29 @@ function Fermator(props) {
   
   const { nodes } = useGLTF('/models/orion_door.glb')
   return (
-    <group {...props} dispose={null} rotation={[-Math.PI/2,0,Math.PI]} position={[0.7,0,-0.14]}>
-      <mesh geometry={nodes.mesh_0.geometry} material={activeMaterial} />
-      <mesh geometry={nodes.mesh_0_1.geometry} material={activeMaterial} />
+    <group {...props} dispose={null} rotation={[0,-Math.PI/2,0]}>
+      <mesh geometry={nodes['DOOR_FRAME_UPRIGHTstp-1'].geometry} material={activeMaterial} position={[-0.218, 0.001, -0.691]} />
+      <mesh geometry={nodes['DOOR_FRAME_UPRIGHTstp-2'].geometry} material={activeMaterial} position={[-0.218, 0.001, -0.691]} />
+      <mesh geometry={nodes['DOOR_SILL_PROFILE_UPDATEDstp-1'].geometry} material={activeMaterial} position={[-0.218, 0.001, -0.691]} />
+      {/* Apply active selection to the four door leaf parts */}
+      <mesh geometry={nodes['DOORstp-1'].geometry} material={activeMaterial} position={[-0.218, 0.001, -0.69]} />
+      <mesh geometry={nodes['DOORstp-2'].geometry} material={activeMaterial} position={[-0.216, 0, -0.69]} />
+      <mesh geometry={nodes['DOORstp-3'].geometry} material={activeMaterial} position={[-0.216, 0, -0.694]} />
+      <mesh geometry={nodes['DOORstp-4'].geometry} material={activeMaterial} position={[-0.218, 0.001, -0.695]} />
+      <mesh geometry={nodes['TOPstp-1'].geometry} material={activeMaterial} position={[-0.218, 0.001, -0.691]} />
+      <group position={[-0.067, 0.979, -0.507]} rotation={[-0.754, 0, Math.PI / 2]}>
+        <mesh geometry={nodes.Mesh_21002.geometry} material={blockRedMaterial} />
+        <mesh geometry={nodes.Mesh_21002_1.geometry} material={activeMaterial} />
+      </group>
+      <group position={[-0.075, 0.962, -0.507]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
+        <mesh geometry={nodes.Mesh_18003.geometry} material={activeMaterial} />
+        <mesh geometry={nodes.Mesh_18003_1.geometry} material={activeMaterial} />
+      </group>
+      <group position={[-0.067, 1.007, -0.507]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
+        <mesh geometry={nodes.Mesh_19002.geometry} material={activeMaterial} />
+        <mesh geometry={nodes.Mesh_19002_1.geometry} material={activeMaterial} />
+        <mesh geometry={nodes.Mesh_19002_2.geometry} material={emissiveWhiteMaterial} />
+      </group>
     </group>
   )
 }

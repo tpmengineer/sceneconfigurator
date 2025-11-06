@@ -118,26 +118,32 @@ function PhoenixDoor(props) {
   const { nodes } = useGLTF('/models/phoenix_door.glb')
 
   return (
-    <group {...props} dispose={null} rotation={[0, -Math.PI / 2 , 0]}>
-  <mesh geometry={nodes['Aussie_Lifts_Door_Handle-1001'].geometry} material={metalMaterial} position={[-0.038, 0.983, -0.444]} rotation={[-Math.PI / 2, 0, 0]} />
-      <group position={[-0.022, 0.988, -0.528]} rotation={[-0.754, 0, Math.PI / 2]}>
-        <mesh geometry={nodes.Mesh_21001.geometry} material={metalMaterial} />
+    <group {...props} dispose={null} rotation={[0,-Math.PI/2,0]}>
+      <mesh geometry={nodes['GEN_3_1850_DOOR_D01-1001'].geometry} material={doorPanelMaterial} position={[-0.126, 1.865, 0.004]} rotation={[-Math.PI, Math.PI / 2, 0]} />
+      <mesh geometry={nodes['GEN_3_1850_DOOR_D01-2001'].geometry} material={doorPanelMaterial} position={[-0.126, 0.05, 0.004]} rotation={[0, 1.571, 0]} />
+      <mesh geometry={nodes['GEN_3_1850_DOOR_D02-1001'].geometry} material={doorPanelMaterial} position={[-0.126, 0.958, 0.447]} rotation={[-Math.PI / 2, Math.PI / 2, 0]} />
+      <mesh geometry={nodes['GEN_3_1850_DOOR_D02-3001'].geometry} material={doorPanelMaterial} position={[-0.126, 0.958, -0.44]} rotation={[Math.PI / 2, Math.PI / 2, 0]} />
+      <mesh geometry={nodes['GEN_3_1850_DOOR_D03-1001'].geometry} material={doorPanelMaterial} position={[-0.126, 0.026, 0.004]} rotation={[0, 1.571, 0]} />
+      <mesh geometry={nodes['GEN_3_1850_DOOR_D04-1003'].geometry} material={blueWhiteGlassMaterial} position={[-0.123, 0.958, 0.004]} rotation={[0, 1.571, 0]} />
+      <mesh geometry={nodes['GEN_3_1850_DOOR_P01-1001'].geometry} material={doorPanelMaterial} position={[-0.128, 1.996, 0.004]} rotation={[0, 1.571, 0]} />
+      <mesh geometry={nodes['GEN_3_1850_DOOR_P02-1001'].geometry} material={doorPanelMaterial} position={[-0.128, 1.006, 0.579]} rotation={[Math.PI / 2, Math.PI / 2, 0]} />
+      <mesh geometry={nodes['GEN_3_1850_DOOR_P03-1001'].geometry} material={doorPanelMaterial} position={[-0.128, 1.006, -0.571]} rotation={[-Math.PI / 2, Math.PI / 2, 0]} />
+      <mesh geometry={nodes['GEN_3_1850_DOOR_P04-1001'].geometry} material={metalMaterial} position={[-0.128, 0.001, 0.004]} rotation={[0, 1.571, 0]} />
+      <mesh geometry={nodes.Aussie_Lifts_Door_Cover001.geometry} material={doorPanelMaterial} position={[-0.08, 0.97, -0.521]} rotation={[-Math.PI / 2, 0, Math.PI / 2]} />
+      <mesh geometry={nodes['Aussie_Lifts_Door_Handle-1001'].geometry} material={metalMaterial} position={[-0.082, 0.985, -0.451]} rotation={[-Math.PI / 2, 0, 0]} />
+      <group position={[-0.073, 0.987, -0.521]} rotation={[-0.754, 0, Math.PI / 2]}>
+        <mesh geometry={nodes.Mesh_21001.geometry} material={blockRedMaterial} />
         <mesh geometry={nodes.Mesh_21001_1.geometry} material={blockRedMaterial} />
       </group>
-      <group position={[-0.03, 0.97, -0.528]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
-        <mesh geometry={nodes.Mesh_18001.geometry} material={metalMaterial} />
+      <group position={[-0.08, 0.97, -0.521]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
+        <mesh geometry={nodes.Mesh_18001.geometry} material={doorPanelMaterial} />
         <mesh geometry={nodes.Mesh_18001_1.geometry} material={metalMaterial} />
       </group>
-      <group position={[-0.022, 1.016, -0.528]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
+      <group position={[-0.073, 1.015, -0.521]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
         <mesh geometry={nodes.Mesh_19001.geometry} material={metalMaterial} />
-        <mesh geometry={nodes.Mesh_19001_1.geometry} material={metalMaterial} />
+        <mesh geometry={nodes.Mesh_19001_1.geometry} material={doorPanelMaterial} />
         <mesh geometry={nodes.Mesh_19001_2.geometry} material={emissiveWhiteMaterial} />
       </group>
-  <mesh geometry={nodes['GEN_3_1850_DOOR_D02-1001'].geometry} material={doorPanelMaterial} position={[-0.075, 0.958, 0.44]} rotation={[-Math.PI / 2, Math.PI / 2, 0]} />
-  <mesh geometry={nodes['GEN_3_1850_DOOR_D03-1001'].geometry} material={blockRedMaterial} position={[-0.07, 0.026, -0.003]} rotation={[0, 1.571, 0]} />
-      <mesh geometry={nodes['GEN_3_1850_DOOR_D04-1003'].geometry} material={blueWhiteGlassMaterial} position={[-0.072, 0.958, -0.003]} rotation={[0, 1.571, 0]} />
-  <mesh geometry={nodes['GEN_3_1850_DOOR_P03-1001'].geometry} material={doorPanelMaterial} position={[-0.077, 1.006, -0.578]} rotation={[-Math.PI / 2, Math.PI / 2, 0]} />
-  <mesh geometry={nodes['GEN_3_1850_DOOR_P04-1001'].geometry} material={metalMaterial} position={[-0.077, 0.001, -0.003]} rotation={[0, 1.571, 0]} />
     </group>
   )
 }

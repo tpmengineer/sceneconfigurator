@@ -39,69 +39,6 @@ import SceneWall from "@/experience/wall_sample"
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 
-// Simple textured card generator for the reflection environment (no external files)
-function EnvImageCard({ position = [0, 0, 8], rotation = [0, 0, 0], scale = [8, 5] }) {
-  const texture = React.useMemo(() => {
-    const w = 1024, h = 512;
-    const canvas = document.createElement('canvas');
-    canvas.width = w; canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    // base gradient
-    const grad = ctx.createLinearGradient(0, 0, w, 0);
-    grad.addColorStop(0, '#f2f2f2');
-    grad.addColorStop(1, '#dcdcdc');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, w, h);
-    // soft vertical band
-    const bandW = Math.floor(w * 0.18);
-    const bandX = Math.floor(w * 0.35);
-    const bandGrad = ctx.createLinearGradient(bandX - bandW, 0, bandX + bandW, 0);
-    bandGrad.addColorStop(0.0, 'rgba(255,255,255,0)');
-    bandGrad.addColorStop(0.5, 'rgba(255,255,255,0.35)');
-    bandGrad.addColorStop(1.0, 'rgba(255,255,255,0)');
-    ctx.fillStyle = bandGrad;
-    ctx.fillRect(bandX - bandW, 0, bandW * 2, h);
-    // subtle top vignette
-    const vig = ctx.createLinearGradient(0, 0, 0, h);
-    vig.addColorStop(0.0, 'rgba(0,0,0,0.04)');
-    vig.addColorStop(0.4, 'rgba(0,0,0,0.0)');
-    vig.addColorStop(1.0, 'rgba(0,0,0,0.0)');
-    ctx.fillStyle = vig;
-    ctx.fillRect(0, 0, w, h);
-    const tex = new THREE.CanvasTexture(canvas);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.needsUpdate = true;
-    return tex;
-  }, []);
-
-  return (
-    <mesh position={position} rotation={rotation}>
-      <planeGeometry args={[1, 1]} />
-      {/* toneMapped=false keeps the card brightness consistent for env capture */}
-      <meshBasicMaterial map={texture} toneMapped={false} />
-      <group scale={scale} />
-    </mesh>
-  );
-}
-
-// Image-based reflection card using a texture from /public (e.g., /images/backgroundimage.png)
-function EnvImagePlane({ src = '/images/backgroundimage.png', position = [0, 0, 9], rotation = [0, 0, 0], scale = [12, 8] }) {
-  const tex = useTexture(src);
-  useEffect(() => {
-    if (!tex) return;
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.needsUpdate = true;
-    if (process.env.NODE_ENV !== 'production') {
-      console.debug('[EnvImagePlane] loaded', src, tex.image?.width, tex.image?.height);
-    }
-  }, [tex]);
-  return (
-    <mesh position={position} rotation={rotation} scale={scale}>
-      <planeGeometry args={[1, 1]} />
-      <meshBasicMaterial map={tex} toneMapped={false} />
-    </mesh>
-  );
-}
 
 function Model(props) {
 
@@ -217,7 +154,7 @@ function Model(props) {
         <SceneWall/>
       </mesh>
 
-      <group position={[0, 0, -0.03]}>
+      <group position={[0, 0, -0.15]}>
         <mesh position={[width/2-0.016,0.5,depth/2-0.4]}><COP/></mesh>
         <mesh position={[-width/2+0.02,-height/2+0.9,0]}><Handrail/></mesh>
         <PhoenixSideLeftFrame w={width} d={depth} h={height}/>
@@ -325,7 +262,7 @@ function Model(props) {
 
       </group>
 
-    <group ref={doorRef} position={[0,ground+0.1,shaft_depth/2-0.2]}>
+    <group ref={doorRef} position={[0,ground+0.1,shaft_depth/2-0.15]}>
           {(door_model === "slide" ? <Fermator/> : <PhoenixDoor/>)}
           {/* <mesh position={[0, -0.008, -0.02]} rotation={[Math.PI / 2, 0, 0]}>
             <Batten width={shaft_width - 0.075} depth={0.04} length={0.04} />
