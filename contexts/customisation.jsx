@@ -167,13 +167,13 @@ const floor_materials = [
     },
     {
       name: "Stainless Steel",
-      color: "#f4f4f4",
+      color: "#424245",
       metalness: 0.5,
         roughness: 0.1,
     },
     {
       name: "Powdercoat Black",
-      color: "#424245",
+      color: "#000000",
       metalness: 0,
       roughness: 1,
     },];
@@ -208,7 +208,7 @@ const floor_materials = [
       const door_colours = [
       {
         name: "Powdercoat White",
-        color: "#d4d4d4",
+        color: "#ffffff",
         metalness: 0,
         roughness: 1,
       },

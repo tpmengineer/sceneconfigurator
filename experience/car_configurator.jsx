@@ -20,6 +20,7 @@ import PhoenixRoofFrame from "@/experience/framing_phoenix_roof"
 import LaminexPanel from "@/experience/laminex"
 import LaminexPanelCeiling from "@/experience/laminex_ceiling";
 import Shadowline from "@/experience/shadowline"
+import ShadowlineCeiling from "@/experience/shadowline_ceiling"
 import FloorPanel from "@/experience/floor_panel"
 
 import HollowRHS from "@/experience/hollowRHS"
@@ -154,9 +155,9 @@ function Model(props) {
         <SceneWall/>
       </mesh>
 
-      <group position={[0, 0, -0.15]}>
-        <mesh position={[width/2-0.016,0.5,depth/2-0.4]}><COP/></mesh>
-        <mesh position={[-width/2+0.02,-height/2+0.9,0]}><Handrail/></mesh>
+      <group position={[0, 0, -0.1]}>
+        <mesh position={[0,-height/2,depth/2*1.2]} rotation={[0, -Math.PI/2,0]} scale={0.98}><COP/></mesh>
+        <mesh position={[width/2-0.02,-height/2+0.9,0]}><Handrail/></mesh>
         <PhoenixSideLeftFrame w={width} d={depth} h={height}/>
         <PhoenixSideRightFrame w={width} d={depth} h={height}/>
         
@@ -180,7 +181,7 @@ function Model(props) {
         
         <Shadowline width={depth} height={height} cutoutWidth={depth-0.15} cutoutHeight={height-0.15} position={[-width/2, 0, 0]} rotation={[0, Math.PI/2, 0]}/>
         <Shadowline width={depth} height={height} cutoutWidth={depth-0.15} cutoutHeight={height-0.15} position={[width/2, 0, 0]} rotation={[0, -Math.PI/2, 0]}/>
-        <Shadowline width={width} height={depth} cutoutWidth={width-0.15} cutoutHeight={depth-0.15} position={[0, height/2, 0]} rotation={[Math.PI/2, 0, 0]}/>
+        <ShadowlineCeiling width={width} height={depth} cutoutWidth={width-0.15} cutoutHeight={depth-0.15} position={[0, height/2, 0]} rotation={[Math.PI/2, 0, 0]}/>
       </group>
 
       <group ref={shaftRef} position={[0,0,0]}> //shaft
@@ -454,8 +455,7 @@ const AdvancedConfigurator = () => {
     };
   }, []);
 
-  let lightingIntensity = 0.5
-  { wallLighting && (lightingIntensity = 0.71) }
+  // Wall light is controlled by the wallLighting toggle; main light is always on
 
   // Interactive ranges for PresentationControls
   const polarRange = [-Math.PI / 12, Math.PI / 6] ;
@@ -566,24 +566,14 @@ const AdvancedConfigurator = () => {
         </EffectComposer>
         <ambientLight intensity={1} />
         <pointLight position={[2, 5, 5]} intensity={0.5} color="#ffffff" distance={10} decay={0} />
-        {/* <pointLight position={[2, 5, 100]} intensity={0.5} color="#ffffff" distance={1000} decay={0} /> */}
-        {/* <hemisphereLight intensity={0.7} /> */}
-        {/* <directionalLight position={[5, 5, 5]}/> */}
-        {/* <pointLight position={[0, -1, 0]} intensity={lightingIntensity} color="#ffffff" distance={2} decay={0} /> */}
-        {/* <directionalLight
-          ref={(light) => light && light.target.position.set(0, 1, 0)}
-          position={[0, -1, 0]}
-          intensity={lightingIntensity}
-          color="#DBE9F4"
-        /> */}
 
-        {/* <directionalLight
-          ref={(light) => light && light.target.position.set(0, 0, -1)}
-          position={[0, 5, 5]}
-          intensity={2}
-          color="#DBE9F4"
-        /> */}
-        {/* <pointLight position={[0, 0.5, 0.1]} intensity={7.5} color="#898989" distance={1.8} decay={0} /> */}
+        {/* Wall Light (conditional) */}
+        {wallLighting && (
+          <pointLight position={[0, -1, 0]} intensity={0.71} color="#ffffff" distance={2} decay={0} />
+        )}
+        
+        {/* Main Light */}
+        <pointLight position={[0, 0.5, 0.1]} intensity={7.5} color="#898989" distance={1.8} decay={0} />
         
         {/* <OrbitControls enableZoom={true} />
         <Model/> */}

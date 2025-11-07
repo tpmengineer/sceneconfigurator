@@ -90,7 +90,7 @@ function Fermator(props) {
     <group {...props} dispose={null} rotation={[0,-Math.PI/2,0]}>
       <mesh geometry={nodes['DOOR_FRAME_UPRIGHTstp-1'].geometry} material={activeMaterial} position={[-0.218, 0.001, -0.691]} />
       <mesh geometry={nodes['DOOR_FRAME_UPRIGHTstp-2'].geometry} material={activeMaterial} position={[-0.218, 0.001, -0.691]} />
-      <mesh geometry={nodes['DOOR_SILL_PROFILE_UPDATEDstp-1'].geometry} material={activeMaterial} position={[-0.218, 0.001, -0.691]} />
+      <mesh geometry={nodes['DOOR_SILL_PROFILE_UPDATEDstp-1'].geometry} material={stainlessMaterial} position={[-0.218, 0.001, -0.691]} />
       {/* Apply active selection to the four door leaf parts */}
       <mesh geometry={nodes['DOORstp-1'].geometry} material={activeMaterial} position={[-0.218, 0.001, -0.69]} />
       <mesh geometry={nodes['DOORstp-2'].geometry} material={activeMaterial} position={[-0.216, 0, -0.69]} />
