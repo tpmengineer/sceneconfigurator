@@ -167,9 +167,9 @@ const floor_materials = [
     },
     {
       name: "Stainless Steel",
-      color: "#424245",
-      metalness: 0.5,
-        roughness: 0.1,
+      color: "#b9bdc2",
+      metalness: 0.6,
+      roughness: 0.25,
     },
     {
       name: "Powdercoat Black",
@@ -217,6 +217,12 @@ const floor_materials = [
         color: "#424245",
         metalness: 0.9,
         roughness: 0.2,
+      },
+      {
+        name: "Aluminium",
+        color: "#b9bdc2",
+        metalness: 0.6,
+        roughness: 0.25,
       },
       {
         name: "Powdercoat Black",
@@ -283,6 +289,19 @@ export const CustomisationProvider = (props) => {
       }
     }, [door_model, door_colour, door_colours_current]);
 
+    // COP colours: remove Stainless Steel from options
+    const cop_colours = useMemo(
+      () => door_colours.filter((c) => c.name !== 'Stainless Steel'),
+      [door_colours]
+    );
+
+    // Initialize COP colour to a valid non-stainless option if current is stainless
+    useEffect(() => {
+      if (!cop_colours.some((c) => c.name === (cop_colour && cop_colour.name))) {
+        setCopColour(cop_colours[0]);
+      }
+    }, [cop_colours]);
+
     return (
         <CustomisationContext.Provider
         value={{
@@ -337,6 +356,7 @@ export const CustomisationProvider = (props) => {
           door_colours_current,
           setDoorColour,
 
+          cop_colours,
           cop_colour,
           setCopColour,
 

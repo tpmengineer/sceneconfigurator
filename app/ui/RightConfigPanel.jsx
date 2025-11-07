@@ -12,27 +12,52 @@ const SectionHeader = ({ title }) => (
 );
 
 // Generic swatch card used across image and color selections
-const SwatchCard = ({ selected, onClick, imageSrc, color, title }) => (
-  <button
-    onClick={onClick}
-    title={title}
-      className={`relative aspect-square ${selected ? "ring-2 ring-green-500 ring-offset-2 ring-offset-white" : "ring-0"}`}
-    aria-pressed={selected}
-  >
-    {/* inner gap between outline and content */}
+const SwatchCard = ({ selected, onClick, imageSrc, color, title }) => {
+  const name = (title || '').toLowerCase();
+
+  // Simple brushed metal previews for stainless/aluminium without needing image assets
+  const isStainless = name.includes('stainless');
+  const isAluminium = name.includes('aluminium') || name.includes('aluminum');
+
+  // Build a CSS background that looks metallic
+  const metalBackground = isStainless
+    ? {
+        backgroundImage:
+          'linear-gradient(135deg, #8f96a0 0%, #c7cbd1 45%, #8a9098 55%, #d4d8de 100%), repeating-linear-gradient(0deg, rgba(255,255,255,0.14) 0px, rgba(255,255,255,0.14) 1px, rgba(0,0,0,0.06) 1px, rgba(0,0,0,0.06) 2px)',
+        backgroundBlendMode: 'soft-light, normal',
+      }
+    : isAluminium
+    ? {
+        backgroundImage:
+          'linear-gradient(135deg, #c9cfd6 0%, #eef1f4 45%, #c1c7cf 55%, #f5f7f9 100%), repeating-linear-gradient(0deg, rgba(255,255,255,0.18) 0px, rgba(255,255,255,0.18) 1px, rgba(0,0,0,0.04) 1px, rgba(0,0,0,0.04) 2px)',
+        backgroundBlendMode: 'soft-light, normal',
+      }
+    : null;
+
+  return (
+    <button
+      onClick={onClick}
+      title={title}
+      className={`relative aspect-square ${selected ? 'ring-2 ring-green-500 ring-offset-2 ring-offset-white' : 'ring-0'}`}
+      aria-pressed={selected}
+    >
+      {/* inner gap between outline and content */}
       <div className="absolute inset-0 rounded-sm overflow-hidden flex items-center justify-center border border-1 border-[#d4d4d4]">
-      {imageSrc ? (
-        <img src={`/${imageSrc}`} alt={title || ""} className="w-full h-full object-cover" />
-      ) : (
-        <span className="w-full h-full" style={{ backgroundColor: color }} />
-      )}
-    </div>
-    {/* selection indicator */}
-    <span className="absolute top-2 left-2 w-3 h-3 rounded-full bg-white flex items-center justify-center border border-1 border-[#d4d4d4]">
-      <span className={`w-2 h-2 rounded-full ${selected ? "bg-black" : "bg-transparent"}`} />
-    </span>
-  </button>
-);
+        {imageSrc ? (
+          <img src={`/${imageSrc}`} alt={title || ''} className="w-full h-full object-cover" />
+        ) : metalBackground ? (
+          <span className="w-full h-full" style={metalBackground} />
+        ) : (
+          <span className="w-full h-full" style={{ backgroundColor: color }} />
+        )}
+      </div>
+      {/* selection indicator */}
+      <span className="absolute top-2 left-2 w-3 h-3 rounded-full bg-white flex items-center justify-center border border-1 border-[#d4d4d4]">
+        <span className={`w-2 h-2 rounded-full ${selected ? 'bg-black' : 'bg-transparent'}`} />
+      </span>
+    </button>
+  );
+};
 
 const CategoryItem = ({ icon: Icon, label, active, onClick }) => (
   <button
@@ -83,6 +108,7 @@ export default function RightConfigPanel() {
   setShowDoor,
   // COP
   cop_colour,
+  cop_colours,
   setCopColour,
     // Handrail
     handrail_model,
@@ -594,7 +620,7 @@ export default function RightConfigPanel() {
                 >
                   <p className="mt-3 text-sm text-gray-800">{cop_colour?.name || "Select"}</p>
                   <div className="mt-3 grid grid-cols-4 gap-3">
-                    {door_colours.map((c, i) => (
+                    {cop_colours.map((c, i) => (
                       <SwatchCard
                         key={i}
                         selected={cop_colour?.name === c.name}

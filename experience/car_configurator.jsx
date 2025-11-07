@@ -406,8 +406,9 @@ const AdvancedConfigurator = () => {
         ceiling:  [-0.25,  0.0,  0.0],          // look a bit more from above
         door:     [0.15,  0.0,  0.0],          // slight pitch towards front
         floor:    [-0.12, 0.08, 0.0],          // slight pitch down, small azimuth
-        cop:      [0.10,  0.28, 0.0],          // yaw left to bring COP into view
-        handrail: [0.18, -0.28, 0.0],          // yaw right to bring handrail into view
+        // swapped: make COP use former handrail view, and handrail use former COP view
+        cop:      [0.18, -0.28, 0.0],          // yaw right to bring COP into view
+        handrail: [0.10,  0.28, 0.0],          // yaw left to bring handrail into view
       };
       // Also set camera's z position (same variable modified by zoom in/out)
       const zByView = {
@@ -416,6 +417,7 @@ const AdvancedConfigurator = () => {
         ceiling: 4.2,
         door:    3.2,
         floor:   3.0,
+        // distances are the same, so no change needed; listed for clarity
         cop:     3.2,
         handrail:3.2,
       };

@@ -5,6 +5,7 @@ import * as THREE from 'three'
 import { createStainlessMaterial, applyStainlessPreset } from './shaders/stainlessShader'
 import { createPowdercoatMaterial, applyPowdercoatPreset, getPowdercoatPreset, isPowdercoatSelection } from './shaders/powdercoatShader'
 import { createMetalMaterial, applyMetalPreset } from './shaders/metalShader'
+import { createAluminiumMaterial, applyAluminiumPreset } from './shaders/aluminiumShader'
 
 function COP(props) {
   const { nodes, materials } = useGLTF('/models/cop.glb')
@@ -38,6 +39,12 @@ function COP(props) {
     return mat;
   }, []);
 
+  const aluminiumMaterial = useMemo(() => {
+    const mat = createAluminiumMaterial();
+    mat.name = 'COP_AluminiumShader';
+    return mat;
+  }, []);
+
   // Drive uniforms from selection
   useEffect(() => {
     if (!cop_colour) return;
@@ -54,6 +61,11 @@ function COP(props) {
       return;
     }
 
+    if (name.includes('aluminium') || name.includes('aluminum')) {
+      applyAluminiumPreset(aluminiumMaterial, cop_colour.color);
+      return;
+    }
+
     // Fallback: generic metal shader tinted to selection color
     applyMetalPreset(metalMaterial, cop_colour.color);
   }, [cop_colour, stainlessMaterial, powdercoatMaterial, metalMaterial]);
@@ -63,8 +75,9 @@ function COP(props) {
     const lower = name.toLowerCase();
     if (lower === 'stainless steel') return stainlessMaterial;
     if (isPowdercoatSelection(lower)) return powdercoatMaterial;
+    if (lower.includes('aluminium') || lower.includes('aluminum')) return aluminiumMaterial;
     return metalMaterial;
-  }, [cop_colour, stainlessMaterial, powdercoatMaterial, metalMaterial]);
+  }, [cop_colour, stainlessMaterial, powdercoatMaterial, aluminiumMaterial, metalMaterial]);
 
   return (
     <group {...props} dispose={null} >

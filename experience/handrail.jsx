@@ -5,6 +5,7 @@ import * as THREE from 'three'
 import { createStainlessMaterial, applyStainlessPreset } from './shaders/stainlessShader'
 import { createPowdercoatMaterial, applyPowdercoatPreset, getPowdercoatPreset, isPowdercoatSelection } from './shaders/powdercoatShader'
 import { createMetalMaterial, applyMetalPreset } from './shaders/metalShader'
+import { createAluminiumMaterial, applyAluminiumPreset } from './shaders/aluminiumShader'
 
 function Handrail(props) {
 
@@ -29,6 +30,12 @@ function Handrail(props) {
       mat.name = 'Handrail_MetalShader';
       return mat;
     }, []);
+
+    const aluminiumMaterial = useMemo(() => {
+      const mat = createAluminiumMaterial();
+      mat.name = 'handrail_AluminiumShader';
+      return mat;
+    }, []);
   
     // Drive uniforms from selection
     useEffect(() => {
@@ -45,6 +52,11 @@ function Handrail(props) {
         applyPowdercoatPreset(powdercoatMaterial, preset);
         return;
       }
+
+      if (name.includes('aluminium') || name.includes('aluminum')) {
+        applyAluminiumPreset(aluminiumMaterial, handrail_colour.color);
+        return;
+      }
   
       // Fallback: generic metal shader tinted to selection color
       applyMetalPreset(metalMaterial, handrail_colour.color);
@@ -55,8 +67,9 @@ function Handrail(props) {
       const lower = name.toLowerCase();
       if (lower === 'stainless steel') return stainlessMaterial;
       if (isPowdercoatSelection(lower)) return powdercoatMaterial;
+      if (lower.includes('aluminium') || lower.includes('aluminum')) return aluminiumMaterial;
       return metalMaterial;
-    }, [handrail_colour, stainlessMaterial, powdercoatMaterial, metalMaterial]);
+    }, [handrail_colour, stainlessMaterial, powdercoatMaterial, aluminiumMaterial, metalMaterial]);
 
   const { nodes, materials } = useGLTF('/models/handrail.glb')
   return (
