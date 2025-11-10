@@ -37,6 +37,9 @@ import Mirror from "@/experience/mirror"
 
 import SceneWall from "@/experience/wall_sample"
 
+import BorderRoof from "@/experience/border_roof"
+import BorderGeometry from "@/experience/border_geometry"
+
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 
@@ -155,16 +158,21 @@ function Model(props) {
         <SceneWall/>
       </mesh>
 
-      <group position={[0, 0, -0.1]}>
+      <group position={[-0.005, 0.0, -0.05]}>
         <mesh position={[0,-height/2,depth/2*1.2]} rotation={[0, -Math.PI/2,0]} scale={0.98}><COP/></mesh>
         <mesh position={[width/2-0.02,-height/2+0.9,0]}><Handrail/></mesh>
-        <PhoenixSideLeftFrame w={width} d={depth} h={height}/>
-        <PhoenixSideRightFrame w={width} d={depth} h={height}/>
+        {/* <PhoenixSideLeftFrame w={width} d={depth} h={height}/> */}
+        {/* <PhoenixSideRightFrame w={width} d={depth} h={height}/> */}
         
-        {!hideReturns && (<PhoenixReturnsFrame w={width} d={depth} h={height}/>)}
-        <PhoenixFloorFrame w={width} d={depth} h={height}/>
-        <PhoenixRoofFrame w={width} d={depth} h={height}/>
+        {/* {!hideReturns && (<PhoenixReturnsFrame w={width} d={depth} h={height}/>)} */}
+        {/* <PhoenixFloorFrame w={width} d={depth} h={height}/> */}
+        {/* <PhoenixRoofFrame w={width} d={depth} h={height}/> */}
+        {/* <BorderRoof w={width} d={depth} h={height}/> */}
+        <BorderGeometry w={width} d={depth} h={height}/>
+
+
         <FloorPanel w={width} d={depth} h={height}/>
+
         {!isDualEntry && (<LaminexPanel width={width} height={height-0.05} position={[0, 0, -depth/2+0.00055]} rotation={[0, 0, 0]}/>)}
         {!isDualEntry && (<PhoenixBackFrame w={width} d={depth} h={height}/>)}
         {!isDualEntry && (<Shadowline width={width} height={height} cutoutWidth={width-0.15} cutoutHeight={height-0.15} position={[0, 0, -depth/2]} rotation={[0, 0, 0]}/>)}
@@ -176,8 +184,8 @@ function Model(props) {
         {/* Ceiling panel */}
         <LaminexPanelCeiling width={width} height={depth-0.05} position={[0, height/2-0.00055, 0]} rotation={[Math.PI/2, 0, 0]} lighting={true}/>
         {/* <mesh  position={[0, 0, -depth/2+0.02]}>
-        <Mirror width={depth} height={height}/>
-          </mesh> */}
+        <Mirror width={depth-0.1} height={height-0.1}/>
+        </mesh> */}
         
         <Shadowline width={depth} height={height} cutoutWidth={depth-0.15} cutoutHeight={height-0.15} position={[-width/2, 0, 0]} rotation={[0, Math.PI/2, 0]}/>
         <Shadowline width={depth} height={height} cutoutWidth={depth-0.15} cutoutHeight={height-0.15} position={[width/2, 0, 0]} rotation={[0, -Math.PI/2, 0]}/>
