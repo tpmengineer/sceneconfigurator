@@ -75,15 +75,15 @@ const CategoryItem = ({ icon: Icon, label, active, onClick }) => (
 export default function RightConfigPanel() {
   const [activeTab, setActiveTab] = useState("DOOR");
   const [materialOpen, setMaterialOpen] = useState(true);      // Walls material (first dropdown open by default)
-  const [lightOpen, setLightOpen] = useState(false);            // Walls light
-  const [shadowOpen, setShadowOpen] = useState(false);          // Walls shadowline
+  const [lightOpen, setLightOpen] = useState(true);             // Walls light (expanded by default)
+  const [shadowOpen, setShadowOpen] = useState(true);           // Walls shadowline (expanded by default)
   const [doorModelOpen, setDoorModelOpen] = useState(true);     // Door model (first dropdown)
   const [doorColourOpen, setDoorColourOpen] = useState(true);
   const [handrailModelOpen, setHandrailModelOpen] = useState(true); // Handrail model (first dropdown)
-  const [handrailColourOpen, setHandrailColourOpen] = useState(false);
+  const [handrailColourOpen, setHandrailColourOpen] = useState(true); // Handrail colour (expanded by default)
   const [floorOpen, setFloorOpen] = useState(true);             // Floor material (first dropdown)
   const [ceilingMaterialOpen, setCeilingMaterialOpen] = useState(true); // Ceiling material (first dropdown)
-  const [ceilingShadowOpen, setCeilingShadowOpen] = useState(false);
+  const [ceilingShadowOpen, setCeilingShadowOpen] = useState(true); // Ceiling shadow (expanded by default)
   const [copOpen, setCopOpen] = useState(true);                 // COP colour (first dropdown)
   const [showCategoryMenu, setShowCategoryMenu] = useState(true);
   const {
@@ -184,7 +184,7 @@ export default function RightConfigPanel() {
   }, [activeView]);
 
   return (
-    <aside className="flex h-full w-3/12 md:w-[360px] lg:w-[400px] bg-white border-l border-gray-200 shadow-xl z-20 flex flex-col">
+  <aside className="flex h-full max-h-screen overflow-y-auto w-3/12 md:w-[360px] lg:w-[400px] bg-white border-l border-gray-200 shadow-xl z-20 flex flex-col">
       {/* Header */}
       <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
         <h2 className="text-base font-semibold text-gray-900">{formatTabTitle(activeTab)}</h2>
@@ -253,8 +253,13 @@ export default function RightConfigPanel() {
 
   {/* Wall light section */}
       <div className="px-5 py-4 border-b border-gray-100">
+        {/* Header to match screenshot: icon + uppercase label + thin rule (clickable to collapse) */}
         <button className="w-full" onClick={() => setLightOpen((v) => !v)}>
-          <SectionHeader title="Wall Light" />
+          <div className="flex items-center gap-2">
+            <Sun size={16} className="text-gray-700" />
+            <span className="text-[11px] uppercase tracking-[0.2em] text-gray-900">Wall Light</span>
+            <div className="ml-2 flex-1 border-t border-gray-200" />
+          </div>
         </button>
         <AnimatePresence initial={false}>
           {lightOpen && (
@@ -265,17 +270,28 @@ export default function RightConfigPanel() {
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
             >
-              <div className="mt-3 flex items-center gap-3">
-                <div className="flex rounded-md border border-gray-300 overflow-hidden">
+              <div className="mt-3">
+                {/* Segmented control to match screenshot: selected is white/elevated, unselected sits on light grey */}
+                <div className="inline-flex rounded-[2px] bg-gray-100 p-1">
                   <button
-                    className={`px-4 py-1 text-xs ${!wallLighting ? "bg-black text-white" : "bg-white text-gray-700"}`}
+                    className={`px-6 py-2 text-[12px] uppercase tracking-[0.2em] transition-colors ${
+                      !wallLighting
+                        ? "bg-white text-black shadow-sm ring-1 ring-gray-200"
+                        : "bg-transparent text-gray-600"
+                    }`}
                     onClick={() => setWallLighting(false)}
+                    aria-pressed={!wallLighting}
                   >
                     NO
                   </button>
                   <button
-                    className={`px-4 py-1 text-xs ${wallLighting ? "bg-black text-white" : "bg-white text-gray-700"}`}
+                    className={`px-6 py-2 text-[12px] uppercase tracking-[0.2em] transition-colors ${
+                      wallLighting
+                        ? "bg-white text-black shadow-sm ring-1 ring-gray-200"
+                        : "bg-transparent text-gray-600"
+                    }`}
                     onClick={() => setWallLighting(true)}
+                    aria-pressed={wallLighting}
                   >
                     YES
                   </button>
