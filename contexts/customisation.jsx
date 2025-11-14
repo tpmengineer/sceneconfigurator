@@ -159,12 +159,12 @@ const floor_materials = [
     },];
 
     const handrail_colours = [
-    {
-      name: "Powdercoat White",
-      color: "#f9f9f9",
-      metalness: 0,
-      roughness: 1,
-    },
+    // {
+    //   name: "Powdercoat White",
+    //   color: "#f9f9f9",
+    //   metalness: 0,
+    //   roughness: 1,
+    // },
     {
       name: "Stainless Steel",
       color: "#b9bdc2",
@@ -242,7 +242,9 @@ export const CustomisationProvider = (props) => {
     const [wall_shadow, setWallShadow] = useState(wall_shadows[2]);
 
     const [handrail_model, setHandrailModel] = useState(handrail_models[0].model)
-    const [handrail_colour, setHandrailColour] = useState(handrail_colours[2])
+    const [handrail_colour, setHandrailColour] = useState(
+      handrail_colours.find(c => c.name === 'Powdercoat Black') || handrail_colours[0]
+    )
 
     const [showCarOnly, setShowCarOnly] = useState(view_booleans[0].value);
     const [wallLighting, setWallLighting] = useState(view_booleans[3].value);

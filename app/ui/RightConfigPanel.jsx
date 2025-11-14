@@ -11,6 +11,26 @@ const SectionHeader = ({ title }) => (
   </div>
 );
 
+// Large portrait image card for door options (to match reference)
+const DoorImageCard = ({ selected, onClick, imageSrc, title }) => (
+  <button
+    onClick={onClick}
+    title={title}
+    className={`relative w-full overflow-hidden bg-white ${
+      selected ? 'border-2 border-green-600' : 'border border-gray-300'
+    }`}
+    style={{ borderRadius: 4 }}
+    aria-pressed={selected}
+  >
+    <span className="absolute top-2 left-2 w-4 h-4 rounded-full bg-white flex items-center justify-center border border-gray-300">
+      <span className={`w-2.5 h-2.5 rounded-full ${selected ? 'bg-black' : 'bg-transparent'}`} />
+    </span>
+    <div className="w-full aspect-[3/4] p-4">
+      <img src={`/${imageSrc}`} alt={title || ''} className="w-full h-full object-contain" />
+    </div>
+  </button>
+);
+
 // Generic swatch card used across image and color selections
 const SwatchCard = ({ selected, onClick, imageSrc, color, title }) => {
   const name = (title || '').toLowerCase();
@@ -55,6 +75,32 @@ const SwatchCard = ({ selected, onClick, imageSrc, color, title }) => {
       <span className="absolute top-2 left-2 w-3 h-3 rounded-full bg-white flex items-center justify-center border border-1 border-[#d4d4d4]">
         <span className={`w-2 h-2 rounded-full ${selected ? 'bg-black' : 'bg-transparent'}`} />
       </span>
+    </button>
+  );
+};
+
+// Helper that renders an image if provided, otherwise a large colour block, using door-style framing
+const DoorColourCard = ({ selected, onClick, imageSrc, color, title }) => {
+  if (imageSrc) {
+    return (
+      <DoorImageCard selected={selected} onClick={onClick} imageSrc={imageSrc} title={title} />
+    );
+  }
+  // Fallback to large swatch styled like a card
+  return (
+    <button
+      onClick={onClick}
+      title={title}
+      className={`relative w-full overflow-hidden bg-white ${
+        selected ? 'border-2 border-green-600' : 'border border-gray-300'
+      }`}
+      style={{ borderRadius: 4 }}
+      aria-pressed={selected}
+    >
+      <span className="absolute top-2 left-2 w-4 h-4 rounded-full bg-white flex items-center justify-center border border-gray-300">
+        <span className={`w-2.5 h-2.5 rounded-full ${selected ? 'bg-black' : 'bg-transparent'}`} />
+      </span>
+      <div className="w-full aspect-[3/4]" style={{ backgroundColor: color || '#f3f4f6' }} />
     </button>
   );
 };
@@ -360,18 +406,29 @@ export default function RightConfigPanel() {
                   transition={{ duration: 0.2, ease: "easeOut" }}
                   className="mt-3"
                 >
-                  <div className="flex gap-2">
+                  {/* Segmented control styling to match reference button look */}
+                  <div className="inline-flex rounded-[2px] bg-gray-100 p-1">
                     <button
-                      className={`px-3 py-1 text-xs rounded border ${door_model === door_models[1].model ? "border-green-500 text-green-600" : "border-gray-300 text-gray-700"}`}
-                      onClick={() => setDoorModel(door_models[1].model)}
+                      className={`px-6 py-2 text-[13px] tracking-[0.02em] transition-colors ${
+                        door_model === 'slide'
+                          ? 'bg-white text-black shadow-sm ring-1 ring-gray-200'
+                          : 'bg-transparent text-gray-600'
+                      }`}
+                      onClick={() => setDoorModel('slide')}
+                      aria-pressed={door_model === 'slide'}
                     >
-                      Sliding
+                      Sliding Door
                     </button>
                     <button
-                      className={`px-3 py-1 text-xs rounded border ${door_model === door_models[0].model ? "border-green-500 text-green-600" : "border-gray-300 text-gray-700"}`}
-                      onClick={() => setDoorModel(door_models[0].model)}
+                      className={`px-6 py-2 text-[13px] tracking-[0.02em] transition-colors ${
+                        door_model === 'swing'
+                          ? 'bg-white text-black shadow-sm ring-1 ring-gray-200'
+                          : 'bg-transparent text-gray-600'
+                      }`}
+                      onClick={() => setDoorModel('swing')}
+                      aria-pressed={door_model === 'swing'}
                     >
-                      Swing
+                      Swing Door
                     </button>
                   </div>
                 </motion.div>
@@ -410,17 +467,46 @@ export default function RightConfigPanel() {
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
                 >
-                  <div className="mt-3 grid grid-cols-4 gap-3">
-                    {door_colours_current.map((c, i) => (
-                      <SwatchCard
-                        key={i}
-                        selected={door_colour?.name === c.name}
-                        onClick={() => setDoorColour(c)}
-                        color={c.color}
-                        title={c.name}
-                      />
-                    ))}
-                  </div>
+                  {/* Show only the current door model's options; image cards when available */}
+                  {(() => {
+                    const imageMap = {
+                      swing: {
+                        'Powdercoat White': 'images/swing_door_white.webp',
+                        'Powdercoat Black': 'images/swing_door_black.webp',
+                      },
+                      slide: {
+                        'Stainless Steel': 'images/sliding_door_stainless.webp',
+                        'Powdercoat Black': 'images/sliding_door_black.webp',
+                      },
+                    };
+                    const titleByModel = {
+                      swing: 'Powder Coated White',
+                      slide: 'Stainless',
+                    };
+                    const options = door_colours_current;
+                    return (
+                      <div className="mt-4">
+                        <p className="mb-2 text-sm text-gray-800">{titleByModel[door_model]}</p>
+                        <div className="grid grid-cols-2 gap-4">
+                          {options.map((c, i) => {
+                            const isSelected = door_colour?.name === c.name;
+                            const img = imageMap[door_model]?.[c.name] || null;
+                            return (
+                              <div key={i} className="flex flex-col gap-2">
+                                <DoorColourCard
+                                  selected={isSelected}
+                                  onClick={() => setDoorColour(c)}
+                                  imageSrc={img}
+                                  color={c.color}
+                                  title={c.name}
+                                />
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -452,16 +538,30 @@ export default function RightConfigPanel() {
                   transition={{ duration: 0.2, ease: "easeOut" }}
                   className="mt-3"
                 >
-                  <div className="flex gap-2">
-                    {handrail_models.map((m, i) => (
-                      <button
-                        key={i}
-                        className={`px-3 py-1 text-xs rounded border ${handrail_model === m.model ? "border-green-500 text-green-600" : "border-gray-300 text-gray-700"}`}
-                        onClick={() => setHandrailModel(m.model)}
-                      >
-                        {m.model.replace("_", " ")}
-                      </button>
-                    ))}
+                  {/* Segmented control styling to match the door toggle */}
+                  <div className="inline-flex rounded-[2px] bg-gray-100 p-1">
+                    <button
+                      className={`px-6 py-2 text-[13px] tracking-[0.02em] transition-colors ${
+                        handrail_model === 'Shaft and Post'
+                          ? 'bg-white text-black shadow-sm ring-1 ring-gray-200'
+                          : 'bg-transparent text-gray-600'
+                      }`}
+                      onClick={() => setHandrailModel('Shaft and Post')}
+                      aria-pressed={handrail_model === 'Shaft and Post'}
+                    >
+                      Shaft and Post
+                    </button>
+                    <button
+                      className={`px-6 py-2 text-[13px] tracking-[0.02em] transition-colors ${
+                        handrail_model === 'Returned'
+                          ? 'bg-white text-black shadow-sm ring-1 ring-gray-200'
+                          : 'bg-transparent text-gray-600'
+                      }`}
+                      onClick={() => setHandrailModel('Returned')}
+                      aria-pressed={handrail_model === 'Returned'}
+                    >
+                      Returned
+                    </button>
                   </div>
                 </motion.div>
               )}
@@ -480,17 +580,35 @@ export default function RightConfigPanel() {
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
                 >
-                  <div className="mt-3 grid grid-cols-4 gap-3">
-                    {handrail_colours.map((c, i) => (
-                      <SwatchCard
-                        key={i}
-                        selected={handrail_colour?.name === c.name}
-                        onClick={() => setHandrailColour(c)}
-                        color={c.color}
-                        title={c.name}
-                      />
-                    ))}
-                  </div>
+                  {(() => {
+                    const handrailImages = {
+                      'Shaft and Post': {
+                        'Powdercoat Black': 'images/renders/shaft-and-post-black.jpg',
+                        'Stainless Steel': 'images/renders/shaft-and-post-stainless.jpg',
+                        'Powdercoat White': null,
+                      },
+                      'Returned': {
+                        'Powdercoat Black': 'images/renders/returned-black.jpg',
+                        'Stainless Steel': 'images/renders/returned-stainless.jpg',
+                        'Powdercoat White': null,
+                      },
+                    };
+                    const current = handrailImages[handrail_model] || {};
+                    return (
+                      <div className="mt-3 grid grid-cols-2 gap-4">
+                        {handrail_colours.map((c, i) => (
+                          <DoorColourCard
+                            key={i}
+                            selected={handrail_colour?.name === c.name}
+                            onClick={() => setHandrailColour(c)}
+                            imageSrc={current[c.name] || null}
+                            color={c.color}
+                            title={c.name}
+                          />
+                        ))}
+                      </div>
+                    );
+                  })()}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -635,17 +753,27 @@ export default function RightConfigPanel() {
                   transition={{ duration: 0.2, ease: "easeOut" }}
                 >
                   <p className="mt-3 text-sm text-gray-800">{cop_colour?.name || "Select"}</p>
-                  <div className="mt-3 grid grid-cols-4 gap-3">
-                    {cop_colours.map((c, i) => (
-                      <SwatchCard
-                        key={i}
-                        selected={cop_colour?.name === c.name}
-                        onClick={() => setCopColour(c)}
-                        color={c.color}
-                        title={c.name}
-                      />
-                    ))}
-                  </div>
+                  {(() => {
+                    const copImages = {
+                      'Powdercoat White': 'images/renders/cop-white.jpg',
+                      'Powdercoat Black': 'images/renders/cop_black.jpg',
+                      Aluminium: 'images/renders/cop_aluminium.jpg',
+                    };
+                    return (
+                      <div className="mt-3 grid grid-cols-3 gap-4">
+                        {cop_colours.map((c, i) => (
+                          <DoorColourCard
+                            key={i}
+                            selected={cop_colour?.name === c.name}
+                            onClick={() => setCopColour(c)}
+                            imageSrc={copImages[c.name] || null}
+                            color={c.color}
+                            title={c.name}
+                          />
+                        ))}
+                      </div>
+                    );
+                  })()}
                 </motion.div>
               )}
             </AnimatePresence>
