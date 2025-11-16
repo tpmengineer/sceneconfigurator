@@ -17,15 +17,16 @@ const DoorImageCard = ({ selected, onClick, imageSrc, title }) => (
     onClick={onClick}
     title={title}
     className={`relative w-full overflow-hidden bg-white ${
-      selected ? 'border-2 border-green-600' : 'border border-gray-300'
-    }`}
-    style={{ borderRadius: 4 }}
+      selected
+        ? 'ring-2 ring-green-500 border border-transparent'
+        : 'ring-2 ring-transparent hover:ring-gray-400 hover:ring-offset-0 border border-[#d4d4d4]'
+    } transition-colors`}
     aria-pressed={selected}
   >
     <span className="absolute top-2 left-2 w-4 h-4 rounded-full bg-white flex items-center justify-center border border-gray-300">
       <span className={`w-2.5 h-2.5 rounded-full ${selected ? 'bg-black' : 'bg-transparent'}`} />
     </span>
-    <div className="w-full aspect-[3/4] p-4">
+    <div className="w-full aspect-[3/4] overflow-hidden flex items-center justify-center">
       <img src={`/${imageSrc}`} alt={title || ''} className="w-full h-full object-contain" />
     </div>
   </button>
@@ -58,7 +59,11 @@ const SwatchCard = ({ selected, onClick, imageSrc, color, title }) => {
     <button
       onClick={onClick}
       title={title}
-      className={`relative aspect-square ${selected ? 'ring-2 ring-green-500 ring-offset-2 ring-offset-white' : 'ring-0'}`}
+      className={`relative aspect-square ${
+        selected
+          ? 'ring-2 ring-green-500 ring-offset-2 ring-offset-white'
+          : 'ring-2 ring-transparent hover:ring-gray-400 hover:ring-offset-0'
+      } transition-colors`}
       aria-pressed={selected}
     >
       {/* inner gap between outline and content */}
@@ -92,15 +97,16 @@ const DoorColourCard = ({ selected, onClick, imageSrc, color, title }) => {
       onClick={onClick}
       title={title}
       className={`relative w-full overflow-hidden bg-white ${
-        selected ? 'border-2 border-green-600' : 'border border-gray-300'
-      }`}
-      style={{ borderRadius: 4 }}
+        selected
+          ? 'ring-2 ring-green-500 ring-offset-2 ring-offset-white'
+          : 'ring-2 ring-transparent hover:ring-gray-400 hover:ring-offset-0'
+      } transition-colors`}
       aria-pressed={selected}
     >
       <span className="absolute top-2 left-2 w-4 h-4 rounded-full bg-white flex items-center justify-center border border-gray-300">
         <span className={`w-2.5 h-2.5 rounded-full ${selected ? 'bg-black' : 'bg-transparent'}`} />
       </span>
-      <div className="w-full aspect-[3/4]" style={{ backgroundColor: color || '#f3f4f6' }} />
+      <div className="w-full aspect-[3/4] overflow-hidden border border-1 border-[#d4d4d4]" style={{ backgroundColor: color || '#f3f4f6' }} />
     </button>
   );
 };
@@ -230,7 +236,7 @@ export default function RightConfigPanel() {
   }, [activeView]);
 
   return (
-  <aside className="flex h-full max-h-screen overflow-y-auto w-3/12 md:w-[360px] lg:w-[400px] bg-white border-l border-gray-200 shadow-xl z-20 flex flex-col">
+  <aside className="flex h-full max-h-screen overflow-y-auto w-4/12 md:w-[400px] lg:w-[500px] bg-white border-l border-gray-200 shadow-xl z-20 flex flex-col">
       {/* Header */}
       <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
         <h2 className="text-base font-semibold text-gray-900">{formatTabTitle(activeTab)}</h2>
