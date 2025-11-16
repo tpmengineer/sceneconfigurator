@@ -264,7 +264,7 @@ export default function RightConfigPanel() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="bg-gray-50 px-4 py-2 border-b border-gray-100 bg-white"
+            className="bg-gray-50 px-4 py-2 border-b border-gray-100 "
           >
             <CategoryItem icon={DoorOpen} label="Door Options" active={activeTab === "DOOR"} onClick={() => { setActiveTab("DOOR"); }} />
             <CategoryItem icon={Square} label="Walls" active={activeTab === "WALLS"} onClick={() => { setActiveTab("WALLS"); }} />
