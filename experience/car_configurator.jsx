@@ -386,12 +386,12 @@ const AdvancedConfigurator = () => {
 
     const onZoomIn = () => {
       if (!cameraRef.current) return;
-      const z = clamp(cameraRef.current.position.z - 0.5, 2.5, 12);
+      const z = clamp(cameraRef.current.position.z - 0.5, 2.5, 7);
       gsap.to(cameraRef.current.position, { z, duration: 0.3, ease: "power2.out", onUpdate: () => cameraRef.current.lookAt(targetRef.current) });
     };
     const onZoomOut = () => {
       if (!cameraRef.current) return;
-      const z = clamp(cameraRef.current.position.z + 0.5, 2.5, 12);
+      const z = clamp(cameraRef.current.position.z + 0.5, 2.5, 7);
       gsap.to(cameraRef.current.position, { z, duration: 0.3, ease: "power2.out", onUpdate: () => cameraRef.current.lookAt(targetRef.current) });
     };
     const onReset = () => {
@@ -470,7 +470,7 @@ const AdvancedConfigurator = () => {
   // Wall light is controlled by the wallLighting toggle; main light is always on
 
   // Interactive ranges for PresentationControls
-  const polarRange = [-Math.PI / 12, Math.PI / 6] ;
+  const polarRange = [-Math.PI / 16, Math.PI / 6] ;
   // const polarRange = isDefaultView ? [-Math.PI / 12, Math.PI / 6] : [0, 0];
 
   const azimuthRange = [-Math.PI / 6, Math.PI / 6] ;
@@ -522,7 +522,7 @@ const AdvancedConfigurator = () => {
       const step = 0.5;
       const dir = Math.sign(e.deltaY) || 0; // >0 scroll down -> zoom out
       if (dir === 0) return;
-      const targetZ = clamp(cameraRef.current.position.z + dir * step, 2.5, 12);
+      const targetZ = clamp(cameraRef.current.position.z + dir * step, 2.5, 7);
       gsap.to(cameraRef.current.position, {
         z: targetZ,
         duration: 0.2,

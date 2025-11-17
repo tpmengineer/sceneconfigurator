@@ -36,7 +36,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="relative flex flex-col items-center justify-center bg-[#adadad] w-full h-[100vh] overflow-hidden">
+    <main className="relative flex flex-col items-center justify-center bg-[#c1beb6] w-full h-[100vh] overflow-hidden">
       {/* Top bar with Back and Request Quote */}
       <TopBar />
 
@@ -60,7 +60,7 @@ export default function Home() {
           
         </div> */}
         {/* <div className='flex flex-col md:flex-row md:w-8/12 justify-between'> */}
-          <div className='flex w-full fixed md:relative top-6 md:top-0 left-0 h-[80vh] md:h-[100vh] bg-[#adadad] '>
+          <div className='flex w-full fixed md:relative top-6 md:top-0 left-0 h-[80vh] md:h-[100vh] bg-[#c1beb6] '>
             <AdvancedConfigurator/>
             <SceneNav />
             <VerticalZoomControls />

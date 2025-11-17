@@ -29,7 +29,7 @@ function SceneWall(props) {
         diffuseColor.rgb = mix(diffuseColor.rgb, uCreamColor, 0.75);
         
         // Make it a bit brighter overall
-        diffuseColor.rgb *= 1.8;
+        diffuseColor.rgb *= 1.6;
         `
       );
 
