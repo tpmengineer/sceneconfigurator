@@ -366,7 +366,7 @@ const AdvancedConfigurator = () => {
       gsap.to(cameraRef.current.position, {
         x: 0,
         y: 0.5, // Move camera higher to focus on car
-        z: 5, // Move camera closer
+        z: 7, // Move camera closer
         duration: 1.5,
         ease: "power2.inOut",
         onUpdate: () => {
@@ -378,7 +378,7 @@ const AdvancedConfigurator = () => {
 
   // Scene navigation events: zoom in/out/reset handled via DOM CustomEvents
   useEffect(() => {
-    const defaultCam = { x: 0, y: 0.5, z: 5 };
+    const defaultCam = { x: 0, y: 0.5, z: 7 };
     const defaultTarget = { x: 0, y: 0, z: 0 };
     const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
@@ -420,7 +420,7 @@ const AdvancedConfigurator = () => {
       };
       // Also set camera's z position (same variable modified by zoom in/out)
       const zByView = {
-        default: 5.0,
+        default: 7.0,
         walls:   5.0,
         ceiling: 4.2,
         door:    3.2,

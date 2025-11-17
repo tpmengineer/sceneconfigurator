@@ -15,6 +15,7 @@ function SceneWall(props) {
     return new THREE.MeshStandardMaterial({ color: wall_material?.color || '#dddddd' })
   }, [ wall_material])
 
+  const blackMaterial = new THREE.MeshStandardMaterial({ color: '#000000' })
   // Prepare floor textures
   const floorTex = useTexture(
     floor_material?.texture
@@ -49,7 +50,7 @@ function SceneWall(props) {
       <mesh geometry={nodes.Cube002.geometry} material={wallMaterial} />
 
       {/* Floor/base elements use current floor selection */}
-      <mesh geometry={nodes.path1.geometry} material={wallMaterial} position={[0.017, 1.281, 4.203]} rotation={[-Math.PI / 2, 0, -Math.PI / 2]} scale={-21.219} />
+      <mesh geometry={nodes.path1.geometry} material={blackMaterial} position={[0.017, 1.281, 4.203]} rotation={[-Math.PI / 2, 0, -Math.PI / 2]} scale={-21.219} />
       <mesh geometry={nodes.Base001.geometry} material={wallMaterial} position={[0.375, 0.172, 2.9]} rotation={[0, Math.PI / 2, 0]} />
     </group>
   )

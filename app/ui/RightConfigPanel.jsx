@@ -238,7 +238,10 @@ export default function RightConfigPanel() {
       if (typeof setShowDoor === "function") {
         setShowDoor(true);
       }
-    }
+    } else {
+      if (typeof setShowDoor === "function") {
+        setShowDoor(false);
+      }}
   }, [activeTab]);
 
   return (
