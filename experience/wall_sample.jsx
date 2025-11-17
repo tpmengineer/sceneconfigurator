@@ -11,9 +11,36 @@ function SceneWall(props) {
 
 
   const wallMaterial = useMemo(() => {
+    const material = new THREE.MeshStandardMaterial({
+      color: wall_material?.color || '#dddddd',
+    });
 
-    return new THREE.MeshStandardMaterial({ color: wall_material?.color || '#dddddd' })
-  }, [ wall_material])
+    material.onBeforeCompile = (shader) => {
+      shader.uniforms.uCreamColor = { value: new THREE.Color('#FFFBEB') };
+
+      shader.fragmentShader = `
+        uniform vec3 uCreamColor;
+        ${shader.fragmentShader}
+      `.replace(
+        `#include <color_fragment>`,
+        `#include <color_fragment>
+
+        // Mix current wall color with a cream tone
+        diffuseColor.rgb = mix(diffuseColor.rgb, uCreamColor, 0.75);
+        
+        // Make it a bit brighter overall
+        diffuseColor.rgb *= 1.1;
+        `
+      );
+
+      material.userData.shader = shader;
+    };
+
+    // This is needed to trigger the onBeforeCompile callback
+    material.customProgramCacheKey = () => Math.random();
+
+    return material;
+  }, [wall_material])
 
   const blackMaterial = new THREE.MeshStandardMaterial({ color: '#000000' })
   // Prepare floor textures
