@@ -4,7 +4,7 @@ import { useGLTF, useTexture } from '@react-three/drei'
 import { useCustomisation } from '@/contexts/customisation'
 
 function SceneWall(props) {
-  const { nodes } = useGLTF('/models/wall_sample.glb')
+  const { nodes } = useGLTF('/models/wall_sample_lowres.glb')
 
   // Pull current selections
   const { wall_material, floor_material } = useCustomisation()
@@ -56,6 +56,6 @@ function SceneWall(props) {
   )
 }
 
-useGLTF.preload('/models/wall_sample.glb')
+useGLTF.preload('/models/wall_sample_lowres.glb')
 
 export default SceneWall

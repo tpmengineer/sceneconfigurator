@@ -36,6 +36,7 @@ import Handrail from "@/experience/handrail"
 import Mirror from "@/experience/mirror"
 
 import SceneWall from "@/experience/wall_sample"
+// import SceneColoured from "@/experience/scene_coloured"
 
 import BorderRoof from "@/experience/border_roof"
 import BorderGeometry from "@/experience/border_geometry"
@@ -156,6 +157,7 @@ function Model(props) {
 
       <mesh position={[0, -height/2, depth/2*1.1]} rotation={[0, -Math.PI/2, 0]}>
         <SceneWall/>
+        {/* <SceneColoured/> */}
       </mesh>
 
       <group position={[-0.005, 0.0, -0.05]}>
