@@ -28,6 +28,10 @@ export default function RequestQuoteModal({ open, onClose }) {
   const [contactBy, setContactBy] = useState("email");
   const [agreeTerms, setAgreeTerms] = useState(true);
   const [subscribe, setSubscribe] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState("idle"); // idle | loading | success | error
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const WEBHOOK_URL = "https://aussielifts.app.n8n.cloud/webhook/655b139d-9afd-4f48-b4d1-51c041595f76";
 
   // Reset fields when opening/closing
   useEffect(() => {
@@ -41,6 +45,9 @@ export default function RequestQuoteModal({ open, onClose }) {
     setContactBy("email");
     setAgreeTerms(true);
     setSubscribe(false);
+    // Reset submission state so the form can be used again after closing
+    setSubmitStatus("idle");
+    setErrorMsg("");
   }, [open]);
 
   useEffect(() => {
@@ -56,9 +63,12 @@ export default function RequestQuoteModal({ open, onClose }) {
     return !!requiredOk;
   }, [fullName, email, email2, agreeTerms]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!canSubmit) return;
+    if (!canSubmit || submitStatus === "loading") return;
+    setSubmitStatus("loading");
+    setErrorMsg("");
+
     const payload = {
       fullName,
       phone,
@@ -67,7 +77,6 @@ export default function RequestQuoteModal({ open, onClose }) {
       message,
       contactBy,
       subscribe,
-      // Selections snapshot
       selections: {
         floor: floor_material?.name,
         walls: wall_material?.name,
@@ -79,12 +88,26 @@ export default function RequestQuoteModal({ open, onClose }) {
         door: `${door_model} / ${door_colour?.name}`,
         cop: cop_colour?.name,
       },
+      timestamp: new Date().toISOString(),
+      userAgent: typeof navigator !== "undefined" ? navigator.userAgent : undefined,
     };
 
-    // TODO: integrate with backend/email. For now, log and close.
-    // eslint-disable-next-line no-console
-    console.log("Quote request submitted:", payload);
-    onClose?.();
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(`Webhook responded ${res.status}`);
+      setSubmitStatus("success");
+      // Auto close after short delay
+      setTimeout(() => {
+        onClose?.();
+      }, 1200);
+    } catch (err) {
+      setErrorMsg(err.message || "Failed to submit. Please try again.");
+      setSubmitStatus("error");
+    }
   };
 
   if (!open) return null;
@@ -145,7 +168,7 @@ export default function RequestQuoteModal({ open, onClose }) {
             <div className="md:col-span-2 p-6">
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Field label="Full name">
+                  <Field label="Full name*">
                     <input
                       type="text"
                       className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black"
@@ -165,7 +188,7 @@ export default function RequestQuoteModal({ open, onClose }) {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Field label="Email address">
+                  <Field label="Email address*">
                     <input
                       type="email"
                       className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black"
@@ -174,7 +197,7 @@ export default function RequestQuoteModal({ open, onClose }) {
                       required
                     />
                   </Field>
-                  <Field label="Repeat email address">
+                  <Field label="Repeat email address*">
                     <input
                       type="email"
                       className={`w-full border rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 ${
@@ -187,13 +210,12 @@ export default function RequestQuoteModal({ open, onClose }) {
                   </Field>
                 </div>
 
-                <Field label="City of residence*">
+                <Field label="City of residence">
                   <input
                     type="text"
                     className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    required
                   />
                 </Field>
 
@@ -257,22 +279,30 @@ export default function RequestQuoteModal({ open, onClose }) {
                 </div>
 
                 {/* Footer */}
+                {/* Status messages */}
+                {submitStatus === "success" && (
+                  <div className="text-green-600 text-xs font-medium">Submitted successfully. Closing…</div>
+                )}
+                {submitStatus === "error" && (
+                  <div className="text-red-600 text-xs font-medium">{errorMsg}</div>
+                )}
                 <div className="flex items-center justify-end gap-3 pt-2">
                   <button
                     type="button"
                     onClick={() => onClose?.()}
                     className="px-4 h-9 rounded-sm border border-gray-300 text-xs tracking-wide uppercase text-gray-800 hover:bg-gray-50"
+                    disabled={submitStatus === "loading"}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    disabled={!canSubmit}
+                    disabled={!canSubmit || submitStatus === "loading"}
                     className={`px-4 h-9 rounded-sm text-xs tracking-wide uppercase text-white ${
-                      canSubmit ? "bg-black hover:bg-black/90" : "bg-gray-400 cursor-not-allowed"
+                      canSubmit && submitStatus !== "loading" ? "bg-black hover:bg-black/90" : submitStatus === "loading" ? "bg-black/70 cursor-wait" : "bg-gray-400 cursor-not-allowed"
                     }`}
                   >
-                    Send Request
+                    {submitStatus === "loading" ? "Sending…" : "Send Request"}
                   </button>
                 </div>
               </form>
