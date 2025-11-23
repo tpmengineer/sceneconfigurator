@@ -1,21 +1,16 @@
-import { PresentationControls, Stage, Float } from "@react-three/drei";
+import { PresentationControls} from "@react-three/drei";
 import React from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
-import { useControls } from 'leva';
 import * as THREE from 'three';
 
 import { useCustomisation } from "@/contexts/customisation";
-import { useGLTF, useTexture} from '@react-three/drei'
-import { Environment, Lightformer } from '@react-three/drei'
+
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
-import PhoenixSideRightFrame from '@/experience/framing_phoenix_side_right'
-import PhoenixSideLeftFrame from '@/experience/framing_phoenix_side_left'
+
 import PhoenixBackFrame from "@/experience/framing_phoenix_back";
 import PhoenixReturnsFrame from "@/experience/framing_phoenix_return";
-import PhoenixFloorFrame from "@/experience/framing_phoenix_floor";
-import PhoenixRoofFrame from "@/experience/framing_phoenix_roof"
+
 
 import LaminexPanel from "@/experience/laminex"
 import LaminexPanelCeiling from "@/experience/laminex_ceiling";
@@ -23,22 +18,13 @@ import Shadowline from "@/experience/shadowline"
 import ShadowlineCeiling from "@/experience/shadowline_ceiling"
 import FloorPanel from "@/experience/floor_panel"
 
-import HollowRHS from "@/experience/hollowRHS"
-import ShaftPost from "@/experience/shaft_post"
-import Ring from "@/experience/ring";
-import Batten from "@/experience/batten";
 
 import PhoenixDoor from "@/experience/phoenix_door"
 import Fermator from "@/experience/orion_door"
 import COP from "@/experience/cop"
 import Handrail from "@/experience/handrail"
 
-import Mirror from "@/experience/mirror"
-
 import SceneWall from "@/experience/wall_sample"
-// import SceneColoured from "@/experience/scene_coloured"
-
-import BorderRoof from "@/experience/border_roof"
 import BorderGeometry from "@/experience/border_geometry"
 
 import gsap from "gsap";
@@ -80,7 +66,6 @@ function Model(props) {
     }
   }, [showCarOnly]);
 
-  // Toggle entire door group's visibility (no material transparency changes)
   useEffect(() => {
     if (!doorRef.current) return;
     doorRef.current.visible = !!showDoor;
@@ -95,16 +80,14 @@ function Model(props) {
   let shaft_height = travel+2.350+ground+0.1
 
 
-  // Generate batten positions every 0.6 units up to travel
   const lateralBattenPositions = [];
   const longitudinalBattenPositions = [];
   const frontInfillBattenPositions = [];
   const rearInfillBattenPositions = [];
 
-  let yPos = 0.6; // First batten position
+  let yPos = 0.6;
   let yPosInfill = 0.4;
 
-  // Define multiple restricted ranges as an array of [min, max] values
   let frontRestrictedRanges = [];
   {!isDualEntry && (
     frontRestrictedRanges = [
@@ -121,7 +104,6 @@ function Model(props) {
     [travel+0.1, travel+0.1+2.2],   // Second restricted range
   ];
 
-  // Function to check if yPos falls in any restricted range
   const isRestrictedFront = (y) => {
     return frontRestrictedRanges.some(([min, max]) => y >= min && y <= max);
   };
@@ -130,7 +112,6 @@ function Model(props) {
   };
 
 
-  // Generate batten positions, skipping restricted ranges
   while (yPos <= shaft_height-ground-0.1) {
     
     longitudinalBattenPositions.push(yPos);
@@ -163,13 +144,6 @@ function Model(props) {
       <group position={[-0.005, 0.0, -0.05]}>
         <mesh position={[0,-height/2,depth/2*1.2]} rotation={[0, -Math.PI/2,0]} scale={0.98}><COP/></mesh>
         <mesh position={[width/2-0.02,-height/2+0.9,0]}><Handrail/></mesh>
-        {/* <PhoenixSideLeftFrame w={width} d={depth} h={height}/> */}
-        {/* <PhoenixSideRightFrame w={width} d={depth} h={height}/> */}
-        
-        {/* {!hideReturns && (<PhoenixReturnsFrame w={width} d={depth} h={height}/>)} */}
-        {/* <PhoenixFloorFrame w={width} d={depth} h={height}/> */}
-        {/* <PhoenixRoofFrame w={width} d={depth} h={height}/> */}
-        {/* <BorderRoof w={width} d={depth} h={height}/> */}
         <BorderGeometry w={width} d={depth} h={height}/>
 
 

@@ -1,33 +1,46 @@
 import * as THREE from 'three';
 import { useCustomisation } from "@/contexts/customisation";
-import { useTexture} from '@react-three/drei'
+import { useTexture } from '@react-three/drei';
+import { useThree } from '@react-three/fiber';
 
 
-function FloorPanel({w, d, h}) {
+function FloorPanel({ w, d, h }) {
     const {
         floor_material,
         floor_materials,
         setFloorMaterial,
     } = useCustomisation();
+  const { gl } = useThree();
 
 const materials = ['natural_springfield', 'natural_lord', 'rustic_walnut', 'grey_carpet', 'urban_blacktech'];
 
 const generateMaterialProps = (materialList) => {
   const textures = {};
-  
+
   materialList.forEach((material) => {
     textures[material] = useTexture({
       map: `/materials/floor/${material}.png`,
     });
 
     const textureProps = textures[material];
-    
-    // textureProps.map.repeat.set(1, 1);
-    {material === 'grey_carpet' ? textureProps.map.repeat.set(5, 2) : textureProps.map.repeat.set(1, 1)}
-    textureProps.map.wrapS = textureProps.map.wrapT = THREE.MirroredRepeatWrapping;
-    textureProps.map.minFilter = THREE.NearestFilter;
-    textureProps.map.magFilter = THREE.NearestFilter;
-    textureProps.map.needsUpdate = true;
+
+    if (textureProps?.map) {
+      if (material === 'grey_carpet') {
+        textureProps.map.repeat.set(5, 2);
+      } else {
+        textureProps.map.repeat.set(1, 1);
+      }
+      textureProps.map.wrapS = textureProps.map.wrapT = THREE.MirroredRepeatWrapping;
+      textureProps.map.generateMipmaps = true;
+      textureProps.map.minFilter = THREE.LinearMipmapLinearFilter;
+      textureProps.map.magFilter = THREE.LinearFilter;
+      textureProps.map.anisotropy = gl.capabilities.getMaxAnisotropy();
+      textureProps.map.needsUpdate = true;
+      // Reduce overall reflectivity
+      textureProps.roughness = 0.9; // High roughness for diffuse look
+      textureProps.metalness = 0.0; // Non-metallic
+      textureProps.envMapIntensity = 0.15; // Lower environment reflection strength
+    }
   });
 
   return textures;

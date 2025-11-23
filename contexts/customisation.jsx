@@ -6,19 +6,19 @@ const floor_materials = [
     color: "", //lightest
     name: "Natural Springfield",
     texture: "natural_springfield",
-    image: 'materials/floor/natural_springfield.png'
-  },
-  {
-    color: "",
-    name: "Natural Lord",
-    texture: "natural_lord",
-    image: 'materials/floor/natural_lord.png'
+    image: 'materials/floor/natural_springfield.jpg'
   },
   {
     color: "",
     name: "Rustic Walnut",
     texture: "rustic_walnut",
     image: 'materials/floor/rustic_walnut.png'
+  },
+  {
+    color: "",
+    name: "Natural Lord",
+    texture: "natural_lord",
+    image: 'materials/floor/natural_lord.png'
   },
   {
     color: "",

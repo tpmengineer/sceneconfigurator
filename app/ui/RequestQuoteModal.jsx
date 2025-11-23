@@ -45,7 +45,6 @@ export default function RequestQuoteModal({ open, onClose }) {
     setContactBy("email");
     setAgreeTerms(true);
     setSubscribe(false);
-    // Reset submission state so the form can be used again after closing
     setSubmitStatus("idle");
     setErrorMsg("");
   }, [open]);
