@@ -248,6 +248,7 @@ export const CustomisationProvider = (props) => {
 
     const [showCarOnly, setShowCarOnly] = useState(view_booleans[0].value);
     const [wallLighting, setWallLighting] = useState(view_booleans[3].value);
+    const [mirrorMode, setMirrorMode] = useState('off'); // 'off' | 'full' | 'half'
     const [hideReturns, setHideReturns] = useState(view_booleans[2].value); 
     const [isDualEntry, setDualEntry] = useState(view_booleans[1].value);
 
@@ -342,6 +343,9 @@ export const CustomisationProvider = (props) => {
 
           wallLighting,
           setWallLighting,
+
+          mirrorMode,
+          setMirrorMode,
 
           hideReturns,
           setHideReturns,

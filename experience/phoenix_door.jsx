@@ -81,7 +81,7 @@ function PhoenixDoor(props) {
     roughness: 0.12,
     envMapIntensity: 0.9,
     transparent: true,
-    opacity: 0.9,
+    opacity: 0.95,
     // Avoid writing depth for cleaner layering of transparent surfaces
     depthWrite: false,
   }), [])

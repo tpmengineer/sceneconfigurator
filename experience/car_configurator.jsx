@@ -28,6 +28,7 @@ import SceneWall from "@/experience/wall_sample"
 import BorderGeometry from "@/experience/border_geometry"
 import FauxBacklight from "@/experience/faux_backlight"
 
+import Mirror from "@/experience/mirror"
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 
@@ -38,6 +39,7 @@ function Model(props) {
     view_booleans,
       showCarOnly,
       wallLighting,
+      mirrorMode,
       hideReturns,
       isDualEntry,
       door_model,
@@ -154,15 +156,24 @@ function Model(props) {
         {!isDualEntry && (<PhoenixBackFrame w={width} d={depth} h={height}/>)}
         {!isDualEntry && (<Shadowline width={width} height={height} cutoutWidth={width-0.15} cutoutHeight={height-0.15} position={[0, 0, -depth/2]} rotation={[0, 0, 0]}/>)}
         {isDualEntry && (<mesh position={[0, 0, 0]} rotation={[0, Math.PI, 0]}>
-          {!hideReturns && (<PhoenixReturnsFrame w={width} d={depth} h={height}/>)}
+          {!hideReturns && (<PhoenixReturnsFrame w={width} d={depth} h={height} />)}
         </mesh>)}
+
+        {/* Mirror-only Returns Frame: hidden in main scene, shown in mirror reflections */}
+        <group visible={false} userData={{ mirrorOnly: true }}>
+          <PhoenixReturnsFrame w={width} d={depth} h={height} />
+        </group>
+        
         <LaminexPanel width={depth} height={height-0.05} position={[width/2-0.00055, 0, 0]} rotation={[0, -Math.PI/2, 0]} lighting={wallLighting}/>
         <LaminexPanel width={depth} height={height-0.05} position={[-width/2+0.00055, 0, 0]} rotation={[0, Math.PI/2, 0]} lighting={wallLighting}/>
         {/* Ceiling panel */}
         <LaminexPanelCeiling width={width} height={depth-0.05} position={[0, height/2-0.00055, 0]} rotation={[Math.PI/2, 0, 0]} lighting={true}/>
-        {/* <mesh  position={[0, 0, -depth/2+0.02]}>
-        <Mirror width={depth-0.1} height={height-0.1}/>
-        </mesh> */}
+        {/** Mirror placed on back wall; render based on selected mode */}
+        {mirrorMode !== 'off' && (
+          <mesh position={[0, 0, -depth/2+0.02]}>
+            <Mirror width={depth-0.1} height={height-0.1} mode={mirrorMode} />
+          </mesh>
+        )}
         
         <Shadowline width={depth} height={height} cutoutWidth={depth-0.15} cutoutHeight={height-0.15} position={[-width/2, 0, 0]} rotation={[0, Math.PI/2, 0]}/>
         <Shadowline width={depth} height={height} cutoutWidth={depth-0.15} cutoutHeight={height-0.15} position={[width/2, 0, 0]} rotation={[0, -Math.PI/2, 0]}/>

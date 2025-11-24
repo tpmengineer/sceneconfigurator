@@ -142,6 +142,8 @@ export default function RightConfigPanel() {
     setWallMaterial,
     wallLighting,
     setWallLighting,
+    mirrorMode,
+    setMirrorMode,
     wall_shadow,
     wall_shadows,
     setWallShadow,
@@ -328,6 +330,48 @@ export default function RightConfigPanel() {
           </div>
         </div>
   </div>
+
+  {/* Mirror section */}
+      <div className="px-5 pt-0 pb-4">
+        <IconHeader icon={Square} label="Mirror" />
+        <div className="mt-3">
+          <div className="inline-flex rounded-[2px] bg-gray-100 p-1">
+            <button
+              className={`px-6 py-2 text-[12px] uppercase tracking-[0.2em] transition-colors ${
+                mirrorMode === 'off'
+                  ? "bg-white text-black shadow-sm ring-1 ring-gray-200"
+                  : "bg-transparent text-gray-600"
+              }`}
+              onClick={() => setMirrorMode('off')}
+              aria-pressed={mirrorMode === 'off'}
+            >
+              NONE
+            </button>
+            <button
+              className={`px-6 py-2 text-[12px] uppercase tracking-[0.2em] transition-colors ${
+                mirrorMode === 'half'
+                  ? "bg-white text-black shadow-sm ring-1 ring-gray-200"
+                  : "bg-transparent text-gray-600"
+              }`}
+              onClick={() => setMirrorMode('half')}
+              aria-pressed={mirrorMode === 'half'}
+            >
+              HALF
+            </button>
+            <button
+              className={`px-6 py-2 text-[12px] uppercase tracking-[0.2em] transition-colors ${
+                mirrorMode === 'full'
+                  ? "bg-white text-black shadow-sm ring-1 ring-gray-200"
+                  : "bg-transparent text-gray-600"
+              }`}
+              onClick={() => setMirrorMode('full')}
+              aria-pressed={mirrorMode === 'full'}
+            >
+              FULL
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Shadowline section */}
       <div className="px-5 py-4">

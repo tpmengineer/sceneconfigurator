@@ -79,6 +79,8 @@ function SceneWall(props) {
       {/* Floor/base elements use current floor selection */}
       <mesh geometry={nodes.path1.geometry} material={blackMaterial} position={[0.017, 1.281, 4.203]} rotation={[-Math.PI / 2, 0, -Math.PI / 2]} scale={-21.219} />
       <mesh geometry={nodes.Base001.geometry} material={wallMaterial} position={[0.375, 0.172, 2.9]} rotation={[0, Math.PI / 2, 0]} />
+      <mesh geometry={nodes.Cube003.geometry} material={wallMaterial} position={[10.332, 0, 0]} rotation={[Math.PI, 0, Math.PI]} />
+
     </group>
   )
 }
