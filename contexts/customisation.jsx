@@ -238,7 +238,7 @@ export const CustomisationProvider = (props) => {
   const [ceiling_material, setCeilingMaterial] = useState(ceiling_materials[8]);
     const [wall_material, setWallMaterial] = useState(wall_materials[8]);
 
-  const [ceiling_shadow, setCeilingShadow] = useState(ceiling_shadows[1]);
+  const [ceiling_shadow, setCeilingShadow] = useState(ceiling_shadows[2]);
     const [wall_shadow, setWallShadow] = useState(wall_shadows[2]);
 
     const [handrail_model, setHandrailModel] = useState(handrail_models[0].model)

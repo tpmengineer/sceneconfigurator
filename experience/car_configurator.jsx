@@ -26,6 +26,7 @@ import Handrail from "@/experience/handrail"
 
 import SceneWall from "@/experience/wall_sample"
 import BorderGeometry from "@/experience/border_geometry"
+import FauxBacklight from "@/experience/faux_backlight"
 
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
@@ -166,6 +167,8 @@ function Model(props) {
         <Shadowline width={depth} height={height} cutoutWidth={depth-0.15} cutoutHeight={height-0.15} position={[-width/2, 0, 0]} rotation={[0, Math.PI/2, 0]}/>
         <Shadowline width={depth} height={height} cutoutWidth={depth-0.15} cutoutHeight={height-0.15} position={[width/2, 0, 0]} rotation={[0, -Math.PI/2, 0]}/>
         <ShadowlineCeiling width={width} height={depth} cutoutWidth={width-0.15} cutoutHeight={depth-0.15} position={[0, height/2, 0]} rotation={[Math.PI/2, 0, 0]}/>
+
+        {/* (<FauxBacklight width={width-0.1} height={height} cutoutWidth={width-0.15} cutoutHeight={height-0.05} position={[0, 0, -depth/2+0.00055]} rotation={[0, 0, 0]}/>) */}
       </group>
 
       <group ref={shaftRef} position={[0,0,0]}> //shaft
@@ -548,7 +551,7 @@ const AdvancedConfigurator = () => {
 
         </Environment> */}
         <EffectComposer>
-          <Bloom intensity={0.5} luminanceThreshold={2} luminanceSmoothing={0.2} />
+          <Bloom intensity={0.5} luminanceThreshold={1} luminanceSmoothing={0.2} />
         </EffectComposer>
         <ambientLight intensity={1} />
         <pointLight position={[2, 5, 5]} intensity={0.5} color="#ffffff" distance={10} decay={0} />

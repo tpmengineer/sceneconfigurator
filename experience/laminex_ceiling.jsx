@@ -128,7 +128,7 @@ function LaminexPanelCeiling({width, height, position, rotation, lighting}) {
       )}
     </mesh>
       { lighting && (<mesh geometry={backingGeometry} position={[0,0,0]}>
-      <meshStandardMaterial color={'#FFF3DA'} emissive={'#FFF3DA'} emissiveIntensity={2} />
+      <meshStandardMaterial color={'#FFF3DA'} emissive={'#ffe1a0'} emissiveIntensity={2} />
       </mesh>)}
     </group>
   );
