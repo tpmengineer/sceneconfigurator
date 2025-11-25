@@ -447,14 +447,10 @@ export default function RightConfigPanel() {
                   'Powdercoat Black': 'images/sliding_door_black.webp',
                 },
               };
-              const titleByModel = {
-                swing: 'Powder Coated White',
-                slide: 'Stainless',
-              };
               const options = door_colours_current;
               return (
                 <div className="mt-4">
-                  <p className="mb-2 text-sm text-gray-800">{titleByModel[door_model]}</p>
+                  <p className="mb-2 text-sm text-gray-800">{door_colour?.name || 'Select Door Colour'}</p>
                   <div className="grid grid-cols-2 gap-4">
                     {options.map((c, i) => {
                       const isSelected = door_colour?.name === c.name;
