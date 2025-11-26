@@ -16,8 +16,16 @@ function COP(props) {
       color: '#ffffff',
       metalness: 0.0,
       roughness: 0.2,
-      emissive: new THREE.Color('#ffffff'),
-      emissiveIntensity: 1.8,
+      // emissive: new THREE.Color('#ffffff'),
+      // emissiveIntensity: 1.8,
+    }), [])
+
+  const emissiveYellowMaterial = useMemo(() => new THREE.MeshStandardMaterial({
+      color: '#e0d208',
+      metalness: 0.0,
+      roughness: 0.2,
+      // emissive: new THREE.Color('#ffffff'),
+      // emissiveIntensity: 1.8,
     }), [])
 
   // Prepare shader materials once
@@ -87,11 +95,17 @@ function COP(props) {
       <mesh geometry={nodes.Braille_G002.geometry} material={metalMaterial} position={[-0.938, 1.114, -0.014]} />
       <mesh geometry={nodes.Braille_Bell002.geometry} material={metalMaterial} position={[-0.938, 1.114, -0.014]} />
       <mesh geometry={nodes.Braille_1002.geometry} material={metalMaterial} position={[-0.938, 1.114, -0.014]} />
-      <mesh geometry={nodes.Bell002.geometry} material={materials['Button Light Yellow']} position={[-0.938, 1.113, -0.014]} />
-      <mesh geometry={nodes['ALFT-010-104_COP_LED_Strip-2006'].geometry} position={[-0.938, 1.114, -0.014]} >
+      <mesh geometry={nodes.Bell002.geometry} material={emissiveYellowMaterial} position={[-0.938, 1.113, -0.014]} />
+      {/* <mesh geometry={nodes['ALFT-010-104_COP_LED_Strip-2006'].geometry} position={[-0.938, 1.114, -0.014]} >
+                <meshStandardMaterial color={'#0000FF'} />
+        </mesh> */}
+        <mesh geometry={nodes['ALFT-010-104_COP_LED_Strip-2006'].geometry} position={[-0.938, 1.114, -0.014]} >
                 <meshStandardMaterial color={'#0000FF'} emissive={'#0000FF'} emissiveIntensity={2} />
         </mesh>
-      <mesh geometry={nodes['ALFT-010-104_COP_LED_Strip-1006'].geometry} position={[-0.938, 1.114, -0.014]} >
+      {/* <mesh geometry={nodes['ALFT-010-104_COP_LED_Strip-1006'].geometry} position={[-0.938, 1.114, -0.014]} >
+        <meshStandardMaterial color={'#0000FF'} />
+        </mesh> */}
+        <mesh geometry={nodes['ALFT-010-104_COP_LED_Strip-1006'].geometry} position={[-0.938, 1.114, -0.014]} >
         <meshStandardMaterial color={'#0000FF'} emissive={'#0000FF'} emissiveIntensity={2} />
         </mesh>
       <group position={[-0.938, 1.114, -0.014]}>
@@ -102,19 +116,19 @@ function COP(props) {
       <mesh geometry={nodes['ALFT-010-102_COP_Part_C-1006'].geometry} material={copActiveMaterial} position={[-0.938, 1.114, -0.014]} />
       <mesh geometry={nodes['ALFT-010-101_COP_Part_B-1006'].geometry} material={copActiveMaterial} position={[-0.938, 1.114, -0.014]} />
       <group position={[-0.938, 1.114, -0.014]}>
-        <mesh geometry={nodes.Mesh_54019.geometry} material={copActiveMaterial} />
+        <mesh geometry={nodes.Mesh_54019.geometry} material={metalMaterial} />
         <mesh geometry={nodes.Mesh_54019_1.geometry} material={emissiveWhiteMaterial} />
       </group>
       <group position={[-0.938, 1.114, -0.014]}>
-        <mesh geometry={nodes.Mesh_54018.geometry} material={copActiveMaterial} />
+        <mesh geometry={nodes.Mesh_54018.geometry} material={metalMaterial} />
         <mesh geometry={nodes.Mesh_54018_1.geometry} material={emissiveWhiteMaterial} />
       </group>
       <group position={[-0.938, 1.114, -0.014]}>
-        <mesh geometry={nodes.Mesh_54017.geometry} material={copActiveMaterial} />
+        <mesh geometry={nodes.Mesh_54017.geometry} material={metalMaterial} />
         <mesh geometry={nodes.Mesh_54017_1.geometry} material={emissiveWhiteMaterial} />
       </group>
       <group position={[-0.938, 1.114, -0.014]}>
-        <mesh geometry={nodes.Mesh_54016.geometry} material={copActiveMaterial} />
+        <mesh geometry={nodes.Mesh_54016.geometry} material={metalMaterial} />
         <mesh geometry={nodes.Mesh_54016_1.geometry} material={emissiveWhiteMaterial} />
       </group>
       <mesh geometry={nodes['1002'].geometry} material={emissiveWhiteMaterial} position={[-0.938, 1.113, -0.014]} />

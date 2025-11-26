@@ -569,7 +569,7 @@ const AdvancedConfigurator = () => {
       <Canvas
         key={canvasKey}
         
-        dpr={[1, 2]}
+        dpr={[1, 1.5]}
         camera={{ position: [0, 1.5, 8], fov: 50 }}
         gl={{ antialias: true }}
         onCreated={({ camera, gl }) => {
@@ -623,7 +623,7 @@ const AdvancedConfigurator = () => {
         </Environment> */}
         {glStatus === 'ok' && canvasReady && (
           <EffectComposer>
-            <Bloom intensity={0.5} luminanceThreshold={1} luminanceSmoothing={0.2} />
+            <Bloom intensity={0.28} luminanceThreshold={1.8} luminanceSmoothing={0.1} />
           </EffectComposer>
         )}
         <ambientLight intensity={1} />
