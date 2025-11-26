@@ -42,7 +42,7 @@ export default function Home() {
 
       <div className='flex flex-col lg:flex-row w-full h-full items-center text-brand-grey'>
         
-          <div className='flex w-full fixed md:relative top-6 md:top-0 left-0 h-[80vh] md:h-[100vh] bg-[#c1beb6] '>
+          <div className='flex w-full fixed md:relative top-0 left-0 h-[100vh] bg-[#c1beb6] '>
             <AdvancedConfigurator/>
             <SceneNav />
             <VerticalZoomControls />

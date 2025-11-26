@@ -247,7 +247,7 @@ export default function RightConfigPanel() {
   }, [activeTab]);
 
   return (
-  <aside className="flex h-full max-h-screen overflow-y-auto w-4/12 md:w-[400px] lg:w-[500px] bg-white border-l border-gray-200 shadow-xl z-20 flex flex-col">
+  <aside className="hidden md:flex h-full max-h-screen overflow-y-auto w-4/12 md:w-[400px] lg:w-[500px] bg-white border-l border-gray-200 shadow-xl z-20 flex flex-col">
       {/* Header */}
       <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
         <h2 className="text-base font-semibold text-gray-900">{formatTabTitle(activeTab)}</h2>
