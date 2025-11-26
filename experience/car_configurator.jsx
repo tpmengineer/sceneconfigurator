@@ -280,15 +280,38 @@ function Model(props) {
 const AdvancedConfigurator = () => {
   const cameraRef = useRef();
   const targetRef = useRef(new THREE.Vector3(0, 0, 0));
+  const glRef = useRef();
   const [isDefaultView, setIsDefaultView] = useState(true);
-  // Rotation for PresentationControls (Euler [x, y, z])
   const [pcRotation, setPcRotation] = useState([0, 0, 0]);
-  // Canvas readiness for event listeners
   const [canvasReady, setCanvasReady] = useState(false);
-  // Debug toggle to visualize environment content and reflections
   const [envDebug, setEnvDebug] = useState(false);
-  // Utility: clamp a value to a min/max range
+  const [glStatus, setGlStatus] = useState('ok'); // ok | lost | restoring | failed
+  const [canvasKey, setCanvasKey] = useState(0); // force remount after restore
+  const [restoreAttempts, setRestoreAttempts] = useState(0);
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+  const attemptRestore = (manual = false) => {
+    if (!glRef.current) return;
+    const gl = glRef.current;
+    const ext = gl.getExtension && gl.getExtension('WEBGL_lose_context');
+    if (ext && typeof ext.restoreContext === 'function') {
+      setGlStatus('restoring');
+      try {
+        ext.restoreContext();
+        setRestoreAttempts(a => a + 1);
+      } catch (e) {
+        console.error('RestoreContext error', e);
+        setGlStatus('failed');
+      }
+    } else {
+      // If no extension, fallback to hard reload (deferred if manual = false)
+      if (manual) {
+        window.location.reload();
+      } else {
+        setGlStatus('failed');
+      }
+    }
+  };
 
   // Initialize envDebug from query string (?env=1 or ?envDebug=true)
   useEffect(() => {
@@ -544,6 +567,7 @@ const AdvancedConfigurator = () => {
   return (
     <>
       <Canvas
+        key={canvasKey}
         
         dpr={[1, 2]}
         camera={{ position: [0, 1.5, 8], fov: 50 }}
@@ -551,6 +575,42 @@ const AdvancedConfigurator = () => {
         onCreated={({ camera, gl }) => {
           cameraRef.current = camera;
           canvasElRef.current = gl.domElement;
+          glRef.current = gl;
+          try {
+            window.forceContextLoss = () => {
+              try {
+                window._forcedContextLoss = true;
+                console.warn('[Debug] Forcing WebGL context loss');
+                gl.forceContextLoss();
+              } catch (err) {
+                console.error('Failed to force context loss:', err);
+              }
+            };
+            window.restoreLostContext = () => attemptRestore(true);
+          } catch (_) {}
+
+          // Context loss / restore handlers (production resiliency)
+          const dom = gl.domElement;
+          const onLost = (e) => {
+            console.warn('[WebGL] Context lost');
+            if (window._forcedContextLoss) {
+              e.preventDefault();
+            }
+            setGlStatus('lost');
+            setCanvasReady(false); // prevent postprocessing re-init while context is gone
+            if (!window._forcedContextLoss) {
+              setTimeout(() => attemptRestore(false), 750);
+            }
+          };
+          const onRestored = () => {
+            console.info('[WebGL] Context restored');
+            window._forcedContextLoss = false;
+            setGlStatus('ok');
+            // Force full scene re-mount to recreate GPU resources
+            setCanvasKey(k => k + 1);
+          };
+          dom.addEventListener('webglcontextlost', onLost, false);
+          dom.addEventListener('webglcontextrestored', onRestored, false);
 
           setCanvasReady(true);
         }}
@@ -561,9 +621,11 @@ const AdvancedConfigurator = () => {
           <Lightformer form="rect" intensity={0.12} color="#ffffff" position={[6, 1.5, 0]} rotation={[0, Math.PI / 2.5, 0]} scale={[6, 6]} />
 
         </Environment> */}
-        <EffectComposer>
-          <Bloom intensity={0.5} luminanceThreshold={1} luminanceSmoothing={0.2} />
-        </EffectComposer>
+        {glStatus === 'ok' && canvasReady && (
+          <EffectComposer>
+            <Bloom intensity={0.5} luminanceThreshold={1} luminanceSmoothing={0.2} />
+          </EffectComposer>
+        )}
         <ambientLight intensity={1} />
         <pointLight position={[2, 5, 5]} intensity={0.5} color="#ffffff" distance={10} decay={0} />
 
@@ -596,6 +658,32 @@ const AdvancedConfigurator = () => {
           <Model />
         </PresentationControls>
       </Canvas>
+      {glStatus !== 'ok' && (
+        <div className="pointer-events-auto absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/70 text-white gap-4">
+          <div className="text-center max-w-sm px-4">
+            <h2 className="text-lg font-semibold mb-2">3D Rendering Problem</h2>
+            {glStatus === 'lost' && (
+              <p className="text-sm mb-3">The graphics context was lost. Attempting automatic recovery…</p>
+            )}
+            {glStatus === 'restoring' && (
+              <p className="text-sm mb-3">Recovering graphics context…</p>
+            )}
+            {glStatus === 'failed' && (
+              <p className="text-sm mb-3">Automatic recovery failed. Please reload the 3D viewer.</p>
+            )}
+            <div className="flex flex-wrap gap-3 justify-center">
+              {glStatus === 'lost' && (
+                <button onClick={() => attemptRestore(true)} className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm font-medium">Retry Now</button>
+              )}
+              {glStatus === 'failed' && (
+                <button onClick={() => window.location.reload()} className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium">Reload Page</button>
+              )}
+            </div>
+            <p className="mt-4 text-xs opacity-70">Attempts: {restoreAttempts}</p>
+            <p className="mt-2 text-xs">If the problem persists, contact <a href="mailto:tom@aussielifts.com.au" className="underline">tom@aussielifts.com.au</a></p>
+          </div>
+        </div>
+      )}
     </>
   );
 };

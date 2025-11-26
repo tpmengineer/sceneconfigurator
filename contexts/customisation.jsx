@@ -38,79 +38,79 @@ const floor_materials = [
   const wall_materials = [
     {
       color: "",
-      name: "Polar White Flint",
+      name: "Polar White",
       texture: "polar_white_flint",
       image: "materials/walls/polar_white_flint.jpg"
     },
     {
       color: "",
-      name: "Ghostgum Flint",
+      name: "Ghostgum",
       texture: "ghostgum_flint",
       image: "materials/walls/ghostgum_flint.jpg"
     },
     {
       color: "",
-      name: "Oyster Grey Flint",
+      name: "Oyster Grey",
       texture: "oyster_grey_flint",
       image: "materials/walls/oyster_grey_flint.jpg"
     },
     {
       color: "",
-      name: "Alaskan Natural",
+      name: "Alaskan",
       texture: "alaskan_natural",
       image: "materials/walls/alaskan_natural.jpg"
     },
     {
       color: "",
-      name: "Natural Walnut Chalk",
+      name: "Natural Walnut",
       texture: "natural_walnut_chalk",
       image: "materials/walls/natural_walnut_chalk.jpg"
     },
     {
       color: "",
-      name: "Elegant Oak Chalk",
+      name: "Elegant Oak",
       texture: "elegant_oak_chalk",
       image: "materials/walls/elegant_oak_chalk.jpg"
     },
     {
       color: "",
-      name: "Fox Teakwood Natural",
+      name: "Fox Teakwood",
       texture: "fox_teakwood_natural",
       image: "materials/walls/fox_teakwood_natural.jpg"
     },
     {
       color: "",
-      name: "Rural Oak Natural",
+      name: "Rural Oak",
       texture: "rural_oak_natural",
       image: "materials/walls/rural_oak_natural.jpg"
     },
     {
       color: "",
-      name: "Classic Oak Natural",
+      name: "Classic Oak",
       texture: "classic_oak_natural",
       image: "materials/walls/classic_oak_natural.jpg"
     },
     {
       color: "",
-      name: "Burnished Wood Natural",
+      name: "Burnished Wood",
       texture: "burnished_wood_natural",
       image: "materials/walls/burnished_wood_natural.jpg"
     },
     {
       color: "",
-      name: "Parchment Flint",
+      name: "Parchment",
       texture: "parchment_flint",
       image: "materials/walls/parchment_flint.jpg"
     },
     {
       color: "",
-      name: "White Flint",
+      name: "White",
       texture: "white_flint",
       image: "materials/walls/white_flint.jpg"
     },
     {
       color: "",
-      name: "Rock Maple Flint",
+      name: "Rock Maple",
       texture: "rock_maple_flint",
       image: "materials/walls/rock_maple_flint.jpg"
     }
@@ -235,11 +235,11 @@ const CustomisationContext = createContext({});
 
 export const CustomisationProvider = (props) => {
     const [floor_material, setFloorMaterial] = useState(floor_materials[3]);
-  const [ceiling_material, setCeilingMaterial] = useState(ceiling_materials[8]);
-    const [wall_material, setWallMaterial] = useState(wall_materials[8]);
+  const [ceiling_material, setCeilingMaterial] = useState(ceiling_materials[1]);
+    const [wall_material, setWallMaterial] = useState(wall_materials[1]);
 
-  const [ceiling_shadow, setCeilingShadow] = useState(ceiling_shadows[2]);
-    const [wall_shadow, setWallShadow] = useState(wall_shadows[2]);
+  const [ceiling_shadow, setCeilingShadow] = useState(ceiling_shadows[5]);
+    const [wall_shadow, setWallShadow] = useState(wall_shadows[5]);
 
     const [handrail_model, setHandrailModel] = useState(handrail_models[0].model)
     const [handrail_colour, setHandrailColour] = useState(
