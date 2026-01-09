@@ -13,6 +13,7 @@
     "@react-three/drei": "^9.111.3",
     "@react-three/fiber": "^8.17.5",
     "@react-three/postprocessing": "^2.19.1",
+    "@vercel/analytics": "^1.6.1",
     "axios": "^1.7.7",
     "bowser": "^2.11.0",
     "classnames": "^2.5.1",

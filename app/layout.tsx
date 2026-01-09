@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import {benton} from "./fonts";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next"
 
 import { CustomisationProvider } from "@/contexts/customisation";
 
@@ -24,6 +25,7 @@ export default function RootLayout({
               {children}
             </div>
           </div>
+          <Analytics />
         </body>
       </html>
     </CustomisationProvider>
