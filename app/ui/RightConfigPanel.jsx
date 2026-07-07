@@ -246,10 +246,51 @@ export default function RightConfigPanel() {
       }}
   }, [activeTab]);
 
+  // Mobile: selecting a category also moves the camera to the matching view
+  const selectTabMobile = (tab) => {
+    const view = VIEW_BY_TAB[tab] || "default";
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("scene-set-view", { detail: view }));
+    }
+    if (typeof setActiveView === "function") {
+      setActiveView(view);
+    }
+    setActiveTab(tab);
+  };
+
+  const MOBILE_TABS = [
+    { key: "DOOR", label: "Door", icon: DoorOpen },
+    { key: "WALLS", label: "Walls", icon: Square },
+    { key: "CEILING", label: "Ceiling", icon: Sun },
+    { key: "FLOOR", label: "Floor", icon: Layers },
+    { key: "HANDRAIL", label: "Handrail", icon: Hand },
+    { key: "COP", label: "COP", icon: SquareArrowUp },
+  ];
+
   return (
-  <aside className="hidden md:flex h-full max-h-screen overflow-y-auto w-4/12 md:w-[400px] lg:w-[500px] bg-white border-l border-gray-200 shadow-xl z-20 flex flex-col">
-      {/* Header */}
-      <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+  <aside className="flex flex-col w-full h-[38%] shrink-0 md:h-full md:max-h-screen md:w-[400px] lg:w-[500px] bg-white border-t md:border-t-0 md:border-l border-gray-200 shadow-xl z-20">
+      {/* Mobile category tabs (horizontal) */}
+      <div className="flex md:hidden shrink-0 overflow-x-auto custom-scrollbar bg-gray-50 border-b border-gray-100 px-1">
+        {MOBILE_TABS.map(({ key, label, icon: Icon }) => {
+          const active = activeTab === key;
+          return (
+            <button
+              key={key}
+              onClick={() => selectTabMobile(key)}
+              className={`flex flex-col items-center gap-1 min-w-[64px] px-3 py-2 border-b-2 transition-colors ${
+                active ? "border-black text-gray-900" : "border-transparent text-gray-500"
+              }`}
+              aria-pressed={active}
+            >
+              <Icon size={16} className={active ? "text-gray-900" : "text-gray-500"} />
+              <span className="text-[10px] uppercase tracking-[0.15em] whitespace-nowrap">{label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Header (desktop) */}
+      <div className="hidden md:flex px-5 py-4 border-b border-gray-100 items-center justify-between">
         <h2 className="text-base font-semibold text-gray-900">{formatTabTitle(activeTab)}</h2>
         <button
           className="text-gray-500 hover:text-gray-700"
@@ -260,7 +301,7 @@ export default function RightConfigPanel() {
         </button>
       </div>
 
-      {/* Category list dropdown (animated) */}
+      {/* Category list dropdown (animated, desktop) */}
       <AnimatePresence initial={false}>
         {showCategoryMenu && (
           <motion.div
@@ -269,7 +310,7 @@ export default function RightConfigPanel() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="bg-gray-50 px-4 py-2 border-b border-gray-100 "
+            className="hidden md:block bg-gray-50 px-4 py-2 border-b border-gray-100 "
           >
             <CategoryItem icon={DoorOpen} label="Door Options" active={activeTab === "DOOR"} onClick={() => { setActiveTab("DOOR"); }} />
             <CategoryItem icon={Square} label="Walls" active={activeTab === "WALLS"} onClick={() => { setActiveTab("WALLS"); }} />
@@ -280,6 +321,9 @@ export default function RightConfigPanel() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Scrollable tab content */}
+      <div className="flex-1 min-h-0 overflow-y-auto flex flex-col">
 
       {/* Content: WALLS */}
       {activeTab === "WALLS" && (
@@ -632,6 +676,7 @@ export default function RightConfigPanel() {
 
       {/* Spacer */}
       <div className="mt-auto" />
+      </div>
     </aside>
   );
 }

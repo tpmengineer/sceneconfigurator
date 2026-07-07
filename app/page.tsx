@@ -36,24 +36,28 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="relative flex flex-col items-center justify-center bg-[#c1beb6] w-full h-[100vh] overflow-hidden">
+    <main
+      className="relative flex flex-col bg-[#c1beb6] w-full overflow-hidden"
+      style={{ height: viewportHeight }}
+    >
       {/* Top bar with Back and Request Quote */}
       <TopBar />
 
-      <div className='flex flex-col lg:flex-row w-full h-full items-center text-brand-grey'>
-        
-          <div className='flex w-full fixed md:relative top-0 left-0 h-[100vh] bg-[#c1beb6] '>
+      <div className='flex flex-col md:flex-row w-full h-full min-h-0 text-brand-grey'>
+
+          {/* Scene: top portion of the screen on mobile, remaining width on desktop */}
+          <div className='relative flex flex-1 min-h-0 w-full md:h-full bg-[#c1beb6]'>
             <AdvancedConfigurator/>
             <SceneNav />
             <VerticalZoomControls />
             <RequestQuoteFloat />
           </div>
 
-          {/* Overlays */}
+          {/* Options: bottom sheet on mobile, right panel on desktop */}
           <RightConfigPanel />
 
       </div>
-      
+
     </main>
   );
 }

@@ -123,7 +123,7 @@ export default function RequestQuoteModal({ open, onClose }) {
 
       {/* Modal panel */}
       <div className="absolute inset-0 flex items-center justify-center p-4">
-        <div className="relative w-full max-w-5xl bg-white rounded-sm shadow-2xl overflow-hidden">
+        <div className="relative w-full max-w-5xl max-h-[90dvh] bg-white rounded-sm shadow-2xl overflow-y-auto">
           {/* Header */}
           <div className="px-6 pt-5 pb-4 border-b">
             <div className="flex items-center justify-between">

@@ -18,7 +18,7 @@ const Tooltip = ({ label, children }) => {
       {children}
       <div
         role="tooltip"
-        className={`pointer-events-none absolute -top-2 -translate-y-full left-1/2 -translate-x-1/2 transition-opacity duration-150 z-30 ${open ? 'opacity-100' : 'opacity-0'}`}
+        className={`pointer-events-none hidden md:block absolute -top-2 -translate-y-full left-1/2 -translate-x-1/2 transition-opacity duration-150 z-30 ${open ? 'opacity-100' : 'opacity-0'}`}
       >
         <div className="relative bg-black text-white text-xs rounded px-2 py-1 shadow-md whitespace-nowrap">
           {label}
@@ -85,9 +85,11 @@ export default function SceneNav() {
     ? (VIEW_LABELS[selectedView] || 'Scene View')
     : 'Scene View';
   return (
-    <div className="absolute left-4 bottom-4 z-20 flex items-center gap-2">
-      <div className="flex items-center gap-2 bg-[#f2f2f2] backdrop-blur border border-gray-200 rounded-xs shadow-sm p-1">
-        <SmoothWidthLabel text={displayLabel} />
+    <div className="absolute left-2 top-1/2 -translate-y-1/2 z-20 flex flex-col items-start gap-2 md:left-4 md:top-auto md:bottom-4 md:translate-y-0 md:flex-row md:items-center">
+      <div className="flex flex-col md:flex-row items-center gap-2 bg-[#f2f2f2] backdrop-blur border border-gray-200 rounded-xs shadow-sm p-1">
+        <div className="hidden md:block">
+          <SmoothWidthLabel text={displayLabel} />
+        </div>
         {/* <div className="h-5 w-px bg-gray-200" /> */}
   <Tooltip label="Scene View">
     <button
@@ -110,8 +112,8 @@ export default function SceneNav() {
   </Tooltip>
         
         {/* Preset cameras */}
-        <div className="ml-1 h-5 w-px bg-gray-200" />
-        <div className="flex items-center gap-1">
+        <div className="my-1 h-px w-5 md:my-0 md:ml-1 md:h-5 md:w-px bg-gray-200" />
+        <div className="flex flex-col md:flex-row items-center gap-1">
           <Tooltip label="Walls">
             <button
               className={`p-2 text-xs hover:bg-gray-100 ${selectedView === "walls" ? "bg-white text-black shadow-md hover:bg-white" : ""}`}
@@ -167,7 +169,7 @@ export default function SceneNav() {
           
         </div>
       </div>
-      <div className='flex items-center h-6 opacity-70'>
+      <div className='hidden md:flex items-center h-6 opacity-70'>
         <AussieLiftsLogoInline color="#000" />
       </div>
     </div>

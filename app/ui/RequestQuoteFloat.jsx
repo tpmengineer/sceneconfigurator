@@ -11,9 +11,9 @@ export default function RequestQuoteFloat() {
   const [open, setOpen] = useState(false);
   return (
     <>
-      {/* lg+ breakpoint (panel ~400px) */}
+      {/* Anchored to the top-right of the scene area on all breakpoints */}
       <button
-        className="hidden lg:block absolute top-3 right-3 z-30 px-4 h-9 bg-black text-white rounded-sm text-xs tracking-wide"
+        className="absolute top-3 right-3 z-30 px-4 h-9 bg-black text-white rounded-sm text-xs tracking-wide"
         onClick={() => setOpen(true)}
       >
         REQUEST QUOTE

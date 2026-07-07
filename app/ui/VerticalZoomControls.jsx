@@ -33,7 +33,7 @@ const TooltipLeft = ({ label, children }) => {
 
 export default function VerticalZoomControls() {
   return (
-    <div className="absolute right-4 bottom-24 md:bottom-1/2 translate-y-1/2 z-20 flex flex-col bg-[#f2f2f2] backdrop-blur border border-gray-200 rounded-xs shadow-sm p-1 gap-1">
+    <div className="absolute right-2 bottom-2 md:right-4 md:bottom-1/2 md:translate-y-1/2 z-20 flex flex-col bg-[#f2f2f2] backdrop-blur border border-gray-200 rounded-xs shadow-sm p-1 gap-1">
       <TooltipLeft label="Zoom In">
         <button
           className="p-2 hover:bg-gray-100"
