@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@gsap/react": "^2.1.1",
+    "@gsap/react": "^2.1.2",
     "@react-three/drei": "^9.111.3",
     "@react-three/fiber": "^8.17.5",
     "@react-three/postprocessing": "^2.19.1",
@@ -20,7 +20,7 @@
     "emailjs-com": "^3.2.0",
     "framer-motion": "^11.18.2",
     "gltfjsx": "^6.5.3",
-    "gsap": "npm:@gsap/shockingly@^3.12.5",
+    "gsap": "^3.15.0",
     "leva": "^0.9.35",
     "lil-gui": "^0.19.2",
     "lucide-react": "^0.514.0",
