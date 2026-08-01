@@ -15,6 +15,7 @@ import SceneNav from '@/app/ui/SceneNav';
 import VerticalZoomControls from '@/app/ui/VerticalZoomControls';
 import TopBar from '@/app/ui/TopBar';
 import RequestQuoteFloat from '@/app/ui/RequestQuoteFloat';
+import SupportLink from '@/app/ui/SupportLink';
 
 
 
@@ -51,6 +52,7 @@ export default function Home() {
             <SceneNav />
             <VerticalZoomControls />
             <RequestQuoteFloat />
+            <SupportLink />
           </div>
 
           {/* Options: bottom sheet on mobile, right panel on desktop */}
